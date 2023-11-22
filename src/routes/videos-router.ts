@@ -1,3 +1,4 @@
+/*
 import {Request, Response, Router} from "express";
 import {
     ErrorMessagesType,
@@ -199,3 +200,6 @@ videoRouter.delete(`/:id`, (req:RequestWithParams<VideoDeleteModel>, res : Respo
     res.sendStatus(204)
 
 })
+
+
+ */

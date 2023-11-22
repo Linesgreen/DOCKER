@@ -25,8 +25,8 @@ export const websiteUrlValidation = body('websiteUrl')
 
 
 
-export const blogIdValidation = body('blogId').isString().trim().custom((value) => {
-    const blog = BlogRepository.getBlogById(value)
+export const blogIdValidation = body('blogId').isString().trim().custom(async (value) => {
+    const blog = await BlogRepository.getBlogById(value)
     if (!blog) {
         throw new Error('Incorrect blogId!')
     }

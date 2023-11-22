@@ -2,11 +2,8 @@
 import request from 'supertest'
 
 import {app, RouterPaths} from "../../src"
-
-import {VideoCreateModel} from "../../src/model/VideosCreateModels";
-import {VideoType} from "../../src/types/videos/output";
-import {BlogCreateModel} from "../../src/types/blog/input";
-import {BlogType} from "../../src/types/blog/output";
+import {BlogCreateModel} from "../../src/types/blogs/input";
+import {OutputBlogType} from "../../src/types/blogs/output";
 
 
 describe('/blogs', () => {
@@ -31,7 +28,7 @@ describe('/blogs', () => {
     })
 
     // Пытаемся создать блог с неправильными данными
-    it("should'nt create blog with incorrect input data ",async () => {
+    it("should'nt create blogs with incorrect input data ",async () => {
         const blogData: BlogCreateModel = {
             "name": "VladVladVladVladVladVladVladVladVlad",
             "description": "",
@@ -53,7 +50,7 @@ describe('/blogs', () => {
     })
 
     //Не проходим проверку логина и пароля
-    it("should'nt create blog without login and pass ",async () => {
+    it("should'nt create blogs without login and pass ",async () => {
         await request(app)
             .post(RouterPaths.blogs)
             .auth('aaaa', 'qwert')
@@ -62,8 +59,8 @@ describe('/blogs', () => {
 
 
     //Переменные для хранения данных созданных видео
-    let createdBlog : BlogType
-    let secondCreatedBlog : BlogType;
+    let createdBlog : OutputBlogType
+    let secondCreatedBlog : OutputBlogType;
     const blogData: BlogCreateModel = {
         name: "Felix",
         description: "Secret",
@@ -76,7 +73,7 @@ describe('/blogs', () => {
     }
 
     // Создаем блог
-    it("should CREATE blog with correct input data ",async () =>{
+    it("should CREATE blogs with correct input data ",async () =>{
         const createResponse = await request(app)
             .post(RouterPaths.blogs)
             .auth('admin', 'qwert')
@@ -98,7 +95,7 @@ describe('/blogs', () => {
             .expect(200, [createdBlog])
     })
     // Создаем второй блог
-    it("should CREATE blog with correct input data ",async () =>{
+    it("should CREATE blogs with correct input data ",async () =>{
         const createResponse = await request(app)
             .post(RouterPaths.blogs)
             .auth('admin', 'qwert')
@@ -176,7 +173,7 @@ describe('/blogs', () => {
     })
 
     // Обновляем данные createdBlog
-     it("should UPDATE blog with correct input data ",async () =>{
+     it("should UPDATE blogs with correct input data ",async () =>{
          await request(app)
              .put(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}`)
              .auth('admin', 'qwert')
@@ -205,7 +202,7 @@ describe('/blogs', () => {
          }
      })
      // Обновляем данные второго блога
-    it("should UPDATE blog with correct input data ",async () =>{
+    it("should UPDATE blogs with correct input data ",async () =>{
         await request(app)
             .put(`${RouterPaths.blogs}/${encodeURIComponent(secondCreatedBlog.id)}`)
             .auth('admin', 'qwert')
@@ -235,7 +232,7 @@ describe('/blogs', () => {
     })
 
     // Удаляем createdBlog
-    it("should DELETE blog with correct id ",async () =>{
+    it("should DELETE blogs with correct id ",async () =>{
         await request(app)
             .delete(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}`)
             .auth('admin', 'qwert')

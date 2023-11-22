@@ -1,46 +1,25 @@
-import {VideoType} from "../types/videos/output";
-import {BlogType} from "../types/blog/output";
+import {Collection, MongoClient} from "mongodb";
+import {BlogType, OutputBlogType} from "../types/blogs/output";
 import {PostType} from "../types/posts/output";
 
+export const port = 3002;
 
-type DBtype = {
-    videos: VideoType[]
-    blogs : BlogType[]
-    posts : PostType[]
-}
+const mongoUri : string = 'mongodb://localhost:27017'
 
+const client = new MongoClient(mongoUri)
 
-export const db: DBtype = {
-    videos:  [{
-            id: 0,
-            title: "string",
-            author: "string",
-            canBeDownloaded: true,
-            minAgeRestriction: null,
-            createdAt: "2023-11-07T11:55:39.104Z",
-            publicationDate: "2023-11-07T11:55:39.104Z",
-            availableResolutions: [
-                "P144"
-            ]
-    }],
-    blogs : [
-        {
-            id: '01',
-            name: "FirstBlogName",
-            description: "FirstDescription",
-            websiteUrl: "FirstURL"
-        }
-    ],
-    posts: [
+const db = client.db('node-blog')
 
-            {
-                id: "01",
-                title: "firstTitle",
-                shortDescription: "firstDescription",
-                content: "firstContent",
-                blogId: "firstBlogID",
-                blogName: "FirstBlogName"
-            }
+export const blogCollection : Collection<BlogType>  = db.collection<BlogType>('blog')
+export const postCollection: Collection<PostType> = db.collection('post')
 
-    ]
+export const runDb = async () => {
+    try {
+        await client.connect()
+        console.log(`Client connected to DB`)
+        console.log(`Listen port number ${port}`)
+    } catch (e) {
+        console.log(`${e}`)
+        await client.close()
+    }
 }

@@ -1,8 +1,6 @@
 // @ts-ignore
 import request from 'supertest'
-
 import {app, RouterPaths} from "../../src"
-
 import {VideoCreateModel} from "../../src/model/VideosCreateModels";
 import {VideoType} from "../../src/types/videos/output";
 

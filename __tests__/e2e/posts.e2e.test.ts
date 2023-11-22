@@ -197,7 +197,7 @@ describe('/posts', () => {
     })
 
 // Удаляем пост
-it("should DELETE blog with correct id ",async () =>{
+it("should DELETE blogs with correct id ",async () =>{
     await request(app)
         .delete(`${RouterPaths.posts}/${encodeURIComponent(createdPostData.id)}`)
         .auth('admin', 'qwert')
