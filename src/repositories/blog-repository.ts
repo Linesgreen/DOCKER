@@ -24,7 +24,7 @@ export class BlogRepository {
             name: params.name,
             description: params.description,
             websiteUrl: params.websiteUrl,
-            isMembership: true
+            isMembership: false
 
         }
         const result = await blogCollection.insertOne(newBlog)
