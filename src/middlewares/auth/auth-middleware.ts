@@ -22,5 +22,5 @@ export const authMiddleware = (req : Request,res : Response,next : NextFunction)
 
     const [decodedLogin, decodedPassword] = decodedData.split(":")
 
-   return decodedLogin === login || decodedPassword === password ? next() : res.sendStatus(401)
+   return decodedLogin === login && decodedPassword === password ? next() : res.sendStatus(401)
 }

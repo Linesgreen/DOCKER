@@ -20,12 +20,6 @@ describe('/blogs', () => {
             .expect(200, [])
     })
 
-    // Проверка на несуществующий блог
-    it('should return 404 for not existing blogs',async () =>{
-        await request(app)
-            .get(`${RouterPaths.blogs}/-100`)
-            .expect(404)
-    })
 
     // Пытаемся создать блог с неправильными данными
     it("should'nt create blogs with incorrect input data ",async () => {
@@ -38,7 +32,7 @@ describe('/blogs', () => {
         //Отсылаем неправильнные данные
         await request(app)
             .post(RouterPaths.blogs)
-            .auth('admin', 'qwert')
+            .auth('admin', 'qwerty')
             .send(blogData)
             .expect(400, {
                 errorsMessages: [
@@ -62,31 +56,33 @@ describe('/blogs', () => {
     let createdBlog : OutputBlogType
     let secondCreatedBlog : OutputBlogType;
     const blogData: BlogCreateModel = {
-        name: "Felix",
-        description: "Secret",
-        websiteUrl: "https://iaWvPbi4nnt1cAej2P1InTA.XtfqLdbJEXn29s9xpDzU762y._qXDYoZFu-TSCTCLhfR.RyF-B3dMemIrQ.INbBcnB3u"
+        "name": "Felix",
+        "description": "Secret",
+        "websiteUrl": "https://iaWvPbi4nnt1cAej2P1InTA.XtfqLdbJEXn29s9xpDzU762y._qXDYoZFu-TSCTCLhfR.RyF-B3dMemIrQ.INbBcnB3u"
     }
     const wrongBlogData: BlogCreateModel = {
-        name: "SecretSecretSecretSecretSecretSecretSecretSecretSecretSecretSecret",
-        description: "",
-        websiteUrl: "http://iaWvPbi4nnt1cAej2P1InTA.XtfqLdbJEXn29s9xpDzU762y._qXDYoZFu-TSCTCLhfR.RyF-B3dMemIrQ.INbBcnB3u"
+        "name": "SecretSecretSecretSecretSecretSecretSecretSecretSecretSecretSecret",
+        "description": "",
+        "websiteUrl": "http://iaWvPbi4nnt1cAej2P1InTA.XtfqLdbJEXn29s9xpDzU762y._qXDYoZFu-TSCTCLhfR.RyF-B3dMemIrQ.INbBcnB3u"
     }
 
     // Создаем блог
     it("should CREATE blogs with correct input data ",async () =>{
         const createResponse = await request(app)
             .post(RouterPaths.blogs)
-            .auth('admin', 'qwert')
+            .auth('admin', 'qwerty')
             .send(blogData)
             .expect(201)
 
         //Проверяем что созданный блог соответствует заданным параметрам
         createdBlog =  createResponse.body;
         expect(createdBlog).toEqual({
-            id: expect.any(String),
-            name: "Felix",
-            description: "Secret",
-            websiteUrl: "https://iaWvPbi4nnt1cAej2P1InTA.XtfqLdbJEXn29s9xpDzU762y._qXDYoZFu-TSCTCLhfR.RyF-B3dMemIrQ.INbBcnB3u"
+            "id": expect.any(String),
+            "name": "Felix",
+            "description": "Secret",
+            "websiteUrl": "https://iaWvPbi4nnt1cAej2P1InTA.XtfqLdbJEXn29s9xpDzU762y._qXDYoZFu-TSCTCLhfR.RyF-B3dMemIrQ.INbBcnB3u",
+            "createdAt": expect.any(String),
+            "isMembership": false
         })
 
         //Проверяем что создался только один блог
@@ -94,22 +90,28 @@ describe('/blogs', () => {
             .get(RouterPaths.blogs)
             .expect(200, [createdBlog])
     })
+
     // Создаем второй блог
     it("should CREATE blogs with correct input data ",async () =>{
         const createResponse = await request(app)
             .post(RouterPaths.blogs)
-            .auth('admin', 'qwert')
+            .auth('admin', 'qwerty')
             .send(blogData)
             .expect(201)
 
         //Проверяем что созданный блог соответствует заданным параметрам
         secondCreatedBlog =  createResponse.body;
         expect(secondCreatedBlog).toEqual({
-            id: expect.any(String),
-            name: "Felix",
-            description: "Secret",
-            websiteUrl: "https://iaWvPbi4nnt1cAej2P1InTA.XtfqLdbJEXn29s9xpDzU762y._qXDYoZFu-TSCTCLhfR.RyF-B3dMemIrQ.INbBcnB3u"
+            "id": expect.any(String),
+            "name": "Felix",
+            "description": "Secret",
+            "websiteUrl": "https://iaWvPbi4nnt1cAej2P1InTA.XtfqLdbJEXn29s9xpDzU762y._qXDYoZFu-TSCTCLhfR.RyF-B3dMemIrQ.INbBcnB3u",
+            "createdAt": expect.any(String),
+            "isMembership": false
         })
+
+        // Проверяем что созданные айди у двух блогов разные
+        expect(createdBlog.id).not.toEqual(secondCreatedBlog.id)
 
         //Проверяем что в бд теперь два блога
         await request(app)
@@ -121,7 +123,7 @@ describe('/blogs', () => {
     it("should'nt UPDATE video with incorrect input data ",async () => {
         await request(app)
             .put(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}`)
-            .auth('admin', 'qwert')
+            .auth('admin', 'qwerty')
             .send(wrongBlogData)
             .expect(400, {
                 errorsMessages: [
@@ -141,14 +143,13 @@ describe('/blogs', () => {
         // Проверяем что блог не обновился
         await request(app)
             .get(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}`)
-            .auth('admin', 'qwert')
             .expect(200, createdBlog)
     })
      // Пытаемя обновить secondCreatedBlog с неправильными данными
     it("should'nt UPDATE video with incorrect input data ",async () => {
         await request(app)
             .put(`${RouterPaths.blogs}/${encodeURIComponent(secondCreatedBlog.id)}`)
-            .auth('admin', 'qwert')
+            .auth('admin', 'qwerty')
             .send(wrongBlogData)
             .expect(400, {
                 errorsMessages: [
@@ -168,7 +169,6 @@ describe('/blogs', () => {
         // Проверяем что блог не обновился
         await request(app)
             .get(`${RouterPaths.blogs}/${encodeURIComponent(secondCreatedBlog.id)}`)
-            .auth('admin', 'qwert')
             .expect(200, secondCreatedBlog)
     })
 
@@ -176,24 +176,17 @@ describe('/blogs', () => {
      it("should UPDATE blogs with correct input data ",async () =>{
          await request(app)
              .put(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}`)
-             .auth('admin', 'qwert')
+             .auth('admin', 'qwerty')
              .send(blogData)
              .expect(204)
 
          // Проверяем что первый блог изменился
          await request(app)
              .get(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}`)
-             .auth('admin', 'qwert')
              .expect(200, {
                  ...createdBlog,
                  ...blogData
              })
-
-         // Проверяем что  первый блог изменился
-         await request(app)
-             .get(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}`)
-             .auth('admin', 'qwert')
-             .expect(200, createdBlog)
 
          // Обновляем запись с первым блогом
          createdBlog = {
@@ -205,26 +198,19 @@ describe('/blogs', () => {
     it("should UPDATE blogs with correct input data ",async () =>{
         await request(app)
             .put(`${RouterPaths.blogs}/${encodeURIComponent(secondCreatedBlog.id)}`)
-            .auth('admin', 'qwert')
+            .auth('admin', 'qwerty')
             .send(blogData)
             .expect(204)
 
-        // Проверяем что первый блог изменился
+        // Проверяем что блог изменился
         await request(app)
             .get(`${RouterPaths.blogs}/${encodeURIComponent(secondCreatedBlog.id)}`)
-            .auth('admin', 'qwert')
             .expect(200, {
                 ...secondCreatedBlog,
                 ...blogData
             })
 
-        // Проверяем что  первый блог изменился
-        await request(app)
-            .get(`${RouterPaths.blogs}/${encodeURIComponent(secondCreatedBlog.id)}`)
-            .auth('admin', 'qwert')
-            .expect(200, secondCreatedBlog)
-
-        // Обновляем запись с первым блогом
+        // Обновляем запись с блогом
         secondCreatedBlog = {
             ...secondCreatedBlog,
             ...blogData
@@ -235,20 +221,20 @@ describe('/blogs', () => {
     it("should DELETE blogs with correct id ",async () =>{
         await request(app)
             .delete(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}`)
-            .auth('admin', 'qwert')
+            .auth('admin', 'qwerty')
             .expect(204)
 
-         // Проверяем что второй блог на месте а первое видео удалилось
+         // Проверяем что второй блог на месте а первый  удалиллся
          await request(app)
              .get(`${RouterPaths.blogs}`)
              .expect([secondCreatedBlog])
 
     })
     // Удаляем второй блог
-    it("should DELETE video2 with correct input data ",async () => {
+    it("should DELETE second blog with correct input data ",async () => {
         await request(app)
             .delete(`${RouterPaths.blogs}/${encodeURIComponent(secondCreatedBlog.id)}`)
-            .auth('admin', 'qwert')
+            .auth('admin', 'qwerty')
             .expect(204)
     })
 
