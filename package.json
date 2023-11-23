@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "yarn nodemon --inspect dist/index.js",
     "watch": "tsc -w",
-    "test": "jest",
+    "test": "jest --detectOpenHandles --no-cache --WatchAll ",
     "build": "tsc",
     "start": "node dist/index.js"
   },
