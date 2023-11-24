@@ -4,7 +4,8 @@ import {PostType} from "../types/posts/output";
 
 export const port = process.env.PORT || 5000;
 
-const mongoUri : string = 'mongodb+srv://linesgreen:3345413kve@cluster0.dwg0i1o.mongodb.net/?retryWrites=true&w=majority'
+const mongoUri : string = process.env.MONGO_URL || 'mongodb://0.0.0.0:27017'
+console.log(process.env.MONGO_URL)
 
 const client = new MongoClient(mongoUri)
 
