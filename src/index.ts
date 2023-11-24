@@ -1,5 +1,5 @@
 import express, {Request, Response} from "express";
-import {port, runDb} from "./db/db";
+import {runDb} from "./db/db";
 import {blogRoute} from "./routes/blog-route";
 import {BlogRepository} from "./repositories/blog-repository";
 import {PostRepository} from "./repositories/post-repository";
@@ -8,7 +8,10 @@ import cors from "cors";
 
 
 export const app  = express()
+export const port = process.env.PORT || 5000;
 app.use(cors())
+
+
 
 export const RouterPaths = {
     blogs: '/blogs',

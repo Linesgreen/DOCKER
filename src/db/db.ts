@@ -5,8 +5,6 @@ import {PostType} from "../types/posts/output";
 
 dotenv.config()
 
-export const port = process.env.PORT || 5000;
-console.log(process.env.PORT)
 
 const mongoUri : string = process.env.MONGO_URL || 'mongodb://0.0.0.0:27017'
 console.log(process.env.MONGO_URL)
@@ -22,7 +20,6 @@ export const runDb = async () => {
     try {
         await client.connect()
         console.log(`Client connected to DB`)
-        console.log(`Listen port number ${port}`)
     } catch (e) {
         console.log(`${e}`)
         await client.close()
