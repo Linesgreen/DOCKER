@@ -1,10 +1,10 @@
 import {Collection, MongoClient} from "mongodb";
-import {BlogType, OutputBlogType} from "../types/blogs/output";
+import {BlogType} from "../types/blogs/output";
 import {PostType} from "../types/posts/output";
 
-export const port = 3002;
+export const port = process.env.PORT || 5000;
 
-const mongoUri : string = 'mongodb://localhost:27017'
+const mongoUri : string = 'mongodb+srv://linesgreen:3345413kve@cluster0.dwg0i1o.mongodb.net/?retryWrites=true&w=majority'
 
 const client = new MongoClient(mongoUri)
 
