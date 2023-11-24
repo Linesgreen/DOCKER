@@ -1,13 +1,14 @@
 import express, {Request, Response} from "express";
-
 import {port, runDb} from "./db/db";
 import {blogRoute} from "./routes/blog-route";
 import {BlogRepository} from "./repositories/blog-repository";
 import {PostRepository} from "./repositories/post-repository";
 import {postRoute} from "./routes/post.route";
+import cors from "cors";
 
 
 export const app  = express()
+app.use(cors())
 
 export const RouterPaths = {
     blogs: '/blogs',
