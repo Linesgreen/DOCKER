@@ -13,6 +13,7 @@ console.log(process.env.MONGO_URL)
 const client = new MongoClient(mongoUri)
 const db = client.db()
 
+
 export const blogCollection : Collection<BlogType>  = db.collection<BlogType>('blog')
 export const postCollection: Collection<PostType> = db.collection('post')
 

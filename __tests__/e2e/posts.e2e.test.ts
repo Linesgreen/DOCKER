@@ -19,7 +19,6 @@ describe('/posts', () => {
     })
 
 
-
     const wrongPostData : PostCreateModel = {
         title: "",
         shortDescription: "",
