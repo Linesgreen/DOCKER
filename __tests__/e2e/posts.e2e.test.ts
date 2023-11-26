@@ -1,8 +1,9 @@
 import request from "supertest";
 import {app, RouterPaths} from "../../src";
 import {PostCreateModel} from "../../src/types/posts/input";
-import {BlogRepository} from "../../src/repositories/blog-repository";
 import {OutputPostType} from "../../src/types/posts/output";
+import {BlogCreateModel} from "../../src/types/blogs/input";
+import {blogTestManager} from "./blogTestManager";
 
 describe('/posts', () => {
     // Очищаем БД
@@ -25,7 +26,7 @@ describe('/posts', () => {
         content: "",
         blogId: ""
     }
-    let blogDataID: string;
+
     let postData: PostCreateModel;
 
 
@@ -74,19 +75,21 @@ describe('/posts', () => {
     // Создаем пост
     it("should CREATE post with correct input data ",async () =>{
         // cоздаем блог, так как без него пост создать нельзя
-
-        blogDataID = await BlogRepository.addBlog({
+        const blogCreateData : BlogCreateModel = {
             name: "TestingPosts",
             description: "WhaitID",
             websiteUrl: "https://iaWvPbi4nnt1cAej2P1InTA.XtfqLdbJEXn29s9xpDzU762y._qXDYoZFu-TSCTCLhfR.RyF-B3dMemIrQ.INbBcnB3u"
-        })
+        }
+
+        const blogData  = (await blogTestManager.createBlog(blogCreateData, 201)).body
+
 
         //Заносим полученный айди Блога в создаваемый пост
         postData  = {
             title: "Test",
             shortDescription: "TestTestTestTestTest",
             content: "TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest",
-            blogId: blogDataID
+            blogId: blogData.id
         }
 
         // отыслаем данные для создания поста

@@ -1,18 +1,16 @@
-
 import request from 'supertest'
 import {app, RouterPaths} from "../../src"
 import {BlogCreateModel} from "../../src/types/blogs/input";
 import {OutputBlogType} from "../../src/types/blogs/output";
-
-
-
+import {blogTestManager} from "./blogTestManager";
 
 describe('/blogs', () => {
     // Очищаем БД
     beforeAll(async ()=>{
         await request(app)
             .delete('/testing/all-data')
-    })
+})
+
 
     // Проверяем что БД пустая
     it('should return 200 and empty []',async () =>{
@@ -20,38 +18,6 @@ describe('/blogs', () => {
             .get(RouterPaths.blogs)
             .expect(200, [])
     })
-
-
-    // Пытаемся создать блог с неправильными данными
-    it("should'nt create blogs with incorrect input data ",async () => {
-        const blogData: BlogCreateModel = {
-            "name": "VladVladVladVladVladVladVladVladVlad",
-            "description": "",
-            "websiteUrl": "http://u.V8.Uczo7ucUynryp3l4zB5yoTlh4r_dsnD64jxyV4QNbF0beDg.tVoEyvnH0b-hskhI9vp-J-gVZEwtS1q5_imLfQ"
-        };
-
-        //Отсылаем неправильнные данные
-        await request(app)
-            .post(RouterPaths.blogs)
-            .auth('admin', 'qwerty')
-            .send(blogData)
-            .expect(400, {
-                errorsMessages: [
-                    { message: 'Incorrect websiteUrl', field: 'websiteUrl' },
-                    { message: 'Incorrect description', field: 'description' },
-                    { message: 'Incorrect name', field: 'name' }
-                ]
-            })
-    })
-
-    //Не проходим проверку логина и пароля
-    it("should'nt create blogs without login and pass ",async () => {
-        await request(app)
-            .post(RouterPaths.blogs)
-            .auth('aaaa', 'qwert')
-            .expect(401, "Unauthorized")
-    })
-
 
     //Переменные для хранения данных созданных видео
     let createdBlog : OutputBlogType
@@ -67,13 +33,37 @@ describe('/blogs', () => {
         "websiteUrl": "http://iaWvPbi4nnt1cAej2P1InTA.XtfqLdbJEXn29s9xpDzU762y._qXDYoZFu-TSCTCLhfR.RyF-B3dMemIrQ.INbBcnB3u"
     }
 
+
+    // Пытаемся создать блог с неправильными данными
+    it("should'nt create blogs with incorrect input data ",async () => {
+
+        //Отсылаем неправильнные данные
+        const createResponse = await blogTestManager.createBlog(wrongBlogData, 400)
+
+        const errorsMessage = createResponse.body
+            expect(errorsMessage).toEqual({
+                errorsMessages: [
+                    { message: 'Incorrect websiteUrl', field: 'websiteUrl' },
+                    { message: 'Incorrect description', field: 'description' },
+                    { message: 'Incorrect name', field: 'name' }
+                ]
+            })
+
+    })
+
+    //Не проходим проверку логина и пароля
+    it("should'nt create blogs without login and pass ",async () => {
+        await request(app)
+            .post(RouterPaths.blogs)
+            .auth('aaaa', 'qwert')
+            .expect(401, "Unauthorized")
+    })
+
+
+
     // Создаем блог
     it("should CREATE blogs with correct input data ",async () =>{
-        const createResponse = await request(app)
-            .post(RouterPaths.blogs)
-            .auth('admin', 'qwerty')
-            .send(blogData)
-            .expect(201)
+        const createResponse = await blogTestManager.createBlog(blogData, 201)
 
         //Проверяем что созданный блог соответствует заданным параметрам
         createdBlog =  createResponse.body;
@@ -94,11 +84,7 @@ describe('/blogs', () => {
 
     // Создаем второй блог
     it("should CREATE blogs with correct input data ",async () =>{
-        const createResponse = await request(app)
-            .post(RouterPaths.blogs)
-            .auth('admin', 'qwerty')
-            .send(blogData)
-            .expect(201)
+        const createResponse = await blogTestManager.createBlog(blogData, 201)
 
         //Проверяем что созданный блог соответствует заданным параметрам
         secondCreatedBlog =  createResponse.body;

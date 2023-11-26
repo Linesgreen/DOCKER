@@ -8,9 +8,8 @@ import {indexRoute} from "./routes/index.route";
 
 
 export const app  = express()
-export const port = process.env.PORT || 5000;
+export const port = process.env.PORT || 5001;
 app.use(cors())
-
 
 export const RouterPaths = {
     blogs: '/blogs',
@@ -23,7 +22,6 @@ app.use(RouterPaths.posts, postRoute)
 app.use(RouterPaths.blogs, blogRoute)
 app.use(RouterPaths.__test__, deleteTestRoute)
 app.use('/', indexRoute)
-
 
 
 app.listen(port, async () => {
