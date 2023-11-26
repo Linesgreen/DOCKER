@@ -2,7 +2,8 @@ import request from 'supertest'
 import {app, RouterPaths} from "../../src"
 import {BlogCreateModel} from "../../src/types/blogs/input";
 import {OutputBlogType} from "../../src/types/blogs/output";
-import {blogTestManager} from "./blogTestManager";
+import {blogTestManager} from "../utils/blogTestManager";
+
 
 describe('/blogs', () => {
     // Очищаем БД

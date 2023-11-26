@@ -3,7 +3,7 @@ import {app, RouterPaths} from "../../src";
 import {PostCreateModel} from "../../src/types/posts/input";
 import {OutputPostType} from "../../src/types/posts/output";
 import {BlogCreateModel} from "../../src/types/blogs/input";
-import {blogTestManager} from "./blogTestManager";
+import {blogTestManager} from "../utils/blogTestManager";
 
 describe('/posts', () => {
     // Очищаем БД
