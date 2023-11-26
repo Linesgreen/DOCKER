@@ -11,6 +11,7 @@ export const app  = express()
 export const port = process.env.PORT || 5001;
 app.use(cors())
 
+
 export const RouterPaths = {
     blogs: '/blogs',
     posts: '/posts',
