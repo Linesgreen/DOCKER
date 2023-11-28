@@ -7,18 +7,19 @@ import {PostCreateModel, PostParams, PostUpdateModel,} from "../types/posts/inpu
 import {authMiddleware} from "../middlewares/auth/auth-middleware";
 import {postPostValidation, postPutValidation} from "../middlewares/post/postsValidator";
 import {PostService} from "../domain/post-service";
+import {PostQueryRepository} from "../repositories/post-query-repository";
 
 export const postRoute = Router({});
 
 
 postRoute.get('/', async (_req: Request, res: Response<PostType[]>) => {
-    const posts: OutputPostType[] = await PostService.getAllPosts();
+    const posts: OutputPostType[] = await PostQueryRepository.getAllPosts();
     res.send(posts)
 });
 
 postRoute.get('/:id', async (req: RequestWithParams<PostParams>, res: Response<PostType>) => {
     const id: string = req.params.id;
-    const post: PostType | null = await PostService.getPostById(id);
+    const post: PostType | null = await PostQueryRepository.getPostById(id);
     post ? res.send(post) : res.sendStatus(404)
 });
 

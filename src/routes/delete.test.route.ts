@@ -1,15 +1,15 @@
-// noinspection MagicNumberJS
+// noinspection MagicNumberJS,AnonymousFunctionJS
 
 import {Request, Response, Router} from "express";
-import {PostRepository} from "../repositories/post-repository";
-import {BlogService} from "../domain/blog-service";
+import {BlogQueryRepository} from "../repositories/blog-query-repository";
+import {PostQueryRepository} from "../repositories/post-query-repository";
 
 
 export const deleteTestRoute = Router({});
 
-deleteTestRoute.delete('', async (req: Request, res: Response) => {
-    await BlogService.deleteAll();
-    await PostRepository.deleteAll();
+deleteTestRoute.delete('', async (_req: Request, res: Response) => {
+    await BlogQueryRepository.deleteAll();
+    await PostQueryRepository.deleteAll();
     res.sendStatus(204)
 });
 

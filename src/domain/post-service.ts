@@ -3,16 +3,17 @@ import {PostCreateModel, PostUpdateModel} from "../types/posts/input";
 import {OutputBlogType} from "../types/blogs/output";
 import {PostRepository} from "../repositories/post-repository";
 import {BlogService} from "./blog-service";
+import {PostQueryRepository} from "../repositories/post-query-repository";
 
 export class PostService {
     //Возвращает посты переработанные в мапере
     static async getAllPosts(): Promise<OutputPostType[]> {
-        return PostRepository.getAllPosts()
+        return PostQueryRepository.getAllPosts()
     }
 
     //Возвращает пост переработанный в мапере
     static async getPostById(id: string): Promise<OutputPostType | null> {
-        return PostRepository.getPostById(id)
+        return PostQueryRepository.getPostById(id)
     }
 
     // Возвращает ID созданного поста
@@ -44,11 +45,5 @@ export class PostService {
     static async deletePostById(id: string): Promise<boolean> {
         return await PostRepository.deletePostById(id)
     }
-
-    // ⚠️Удаление всех постов для тестов
-    static async deleteAll() {
-        await PostRepository.deleteAll()
-    }
-
 }
 

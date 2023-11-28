@@ -1,21 +1,21 @@
 export type BlogParams = {
-    id : string
+    id: string
 }
 
 export type PostBlogReqBody = {
     name: string,
     description: string,
-    websiteUrl:string
+    websiteUrl: string
 }
 
-export type BlogCreateModel ={
+export type BlogCreateModel = {
     name: string,
     description: string,
-    websiteUrl:string
+    websiteUrl: string
 }
 
 export type BlogUpdateModel = {
     name: string,
     description: string,
-    websiteUrl:string
+    websiteUrl: string
 }

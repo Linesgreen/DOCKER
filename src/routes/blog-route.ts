@@ -7,18 +7,19 @@ import {authMiddleware} from "../middlewares/auth/auth-middleware";
 import {blogPostValidation, blogPutValidation} from "../middlewares/blog/blogsValidator";
 import {OutputBlogType} from "../types/blogs/output";
 import {BlogService} from "../domain/blog-service";
+import {BlogQueryRepository} from "../repositories/blog-query-repository";
 
 
 export const blogRoute = Router({});
 
 blogRoute.get('/', async (_req: Request, res: Response<OutputBlogType[]>) => {
-    const blogs: OutputBlogType[] = await BlogService.getAllBlogs();
+    const blogs: OutputBlogType[] = await BlogQueryRepository.getAllBlogs();
     res.send(blogs)
 });
 
 blogRoute.get('/:id', async (req: RequestWithParams<BlogParams>, res: Response<OutputBlogType>) => {
     const id: string = req.params.id;
-    const blog: OutputBlogType | null = await BlogService.getBlogById(id);
+    const blog: OutputBlogType | null = await BlogQueryRepository.getBlogById(id);
     blog ? res.send(blog) : res.sendStatus(404)
 });
 
