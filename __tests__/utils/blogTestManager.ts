@@ -1,6 +1,6 @@
 import request from "supertest";
-import {app, RouterPaths} from "../../src";
 import {BlogCreateModel} from "../../src/types/blogs/input";
+import {app, RouterPaths} from "../../setting";
 
 
 

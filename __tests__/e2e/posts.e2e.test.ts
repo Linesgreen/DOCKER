@@ -1,11 +1,12 @@
 import request from "supertest";
-import {app, RouterPaths} from "../../src";
 import {PostCreateModel} from "../../src/types/posts/input";
 import {OutputPostType} from "../../src/types/posts/output";
 import {BlogCreateModel} from "../../src/types/blogs/input";
 import {blogTestManager} from "../utils/blogTestManager";
+import {app, RouterPaths} from "../../setting";
 
 describe('/posts', () => {
+
     // Очищаем БД
     beforeAll(async ()=>{
         await request(app)
@@ -27,6 +28,7 @@ describe('/posts', () => {
         blogId: ""
     }
 
+    // Переменная для хранения информации для создания поста
     let postData: PostCreateModel;
 
 
@@ -74,13 +76,15 @@ describe('/posts', () => {
 
     // Создаем пост
     it("should CREATE post with correct input data ",async () =>{
-        // cоздаем блог, так как без него пост создать нельзя
+
+        // данные для создания блога
         const blogCreateData : BlogCreateModel = {
             name: "TestingPosts",
             description: "WhaitID",
             websiteUrl: "https://iaWvPbi4nnt1cAej2P1InTA.XtfqLdbJEXn29s9xpDzU762y._qXDYoZFu-TSCTCLhfR.RyF-B3dMemIrQ.INbBcnB3u"
         }
 
+        // cоздаем блог, так как без него пост создать нельзя
         const blogData  = (await blogTestManager.createBlog(blogCreateData, 201)).body
 
 
@@ -132,7 +136,7 @@ describe('/posts', () => {
                     createdAt: expect.any(String)
                 })})
 
-        // Проверяем что созданные айди у двух блогов разные
+        // Проверяем что созданные айди у двух постов разные
         expect(createdPostData.id).not.toEqual(secondCreatedPost.id)
 
         //Проверяем что в базе находятся два поста
@@ -168,7 +172,7 @@ describe('/posts', () => {
                await request(app)
                    .put(`${RouterPaths.posts}/${encodeURIComponent(createdPostData.id)}`)
                    .auth('adminn', 'qwertn')
-                   .send(wrongPostData)
+                   .send(postData)
                    .expect(401, 'Unauthorized')
 
                // Проверяем что пост не обновился
@@ -208,7 +212,7 @@ it("should DELETE blogs with correct id ",async () =>{
         .auth('admin', 'qwerty')
         .expect(204)
 
-    // Проверяем что второй блог на месте а первое видео удалилось
+    // Проверяем что второй блог на месте а первый удалился
     await request(app)
         .get(`${RouterPaths.posts}`)
         .expect([secondCreatedPost])

@@ -1,8 +1,8 @@
 import request from 'supertest'
-import {app, RouterPaths} from "../../src"
 import {BlogCreateModel} from "../../src/types/blogs/input";
 import {OutputBlogType} from "../../src/types/blogs/output";
 import {blogTestManager} from "../utils/blogTestManager";
+import {app, RouterPaths} from "../../setting";
 
 
 describe('/blogs', () => {
@@ -23,15 +23,17 @@ describe('/blogs', () => {
     //Переменные для хранения данных созданных видео
     let createdBlog : OutputBlogType
     let secondCreatedBlog : OutputBlogType;
+
     const blogData: BlogCreateModel = {
         "name": "Felix",
         "description": "Secret",
         "websiteUrl": "https://iaWvPbi4nnt1cAej2P1InTA.XtfqLdbJEXn29s9xpDzU762y._qXDYoZFu-TSCTCLhfR.RyF-B3dMemIrQ.INbBcnB3u"
     }
+
     const wrongBlogData: BlogCreateModel = {
         "name": "SecretSecretSecretSecretSecretSecretSecretSecretSecretSecretSecret",
         "description": "",
-        "websiteUrl": "http://iaWvPbi4nnt1cAej2P1InTA.XtfqLdbJEXn29s9xpDzU762y._qXDYoZFu-TSCTCLhfR.RyF-B3dMemIrQ.INbBcnB3u"
+        "websiteUrl": "htt://iaWvPbi4nnt1cAej2P1InTA.XtfqLdbJEXn29s9xpDzU762y._qXDYoZFu-TSCTCLhfR.RyF-B3dMemIrQ.INbBcnB3u"
     }
 
 
@@ -41,6 +43,7 @@ describe('/blogs', () => {
         //Отсылаем неправильнные данные
         const createResponse = await blogTestManager.createBlog(wrongBlogData, 400)
 
+        // Проверяем сообщение об ошибке
         const errorsMessage = createResponse.body
             expect(errorsMessage).toEqual({
                 errorsMessages: [
@@ -128,36 +131,10 @@ describe('/blogs', () => {
             .send(wrongBlogData)
             .expect(401, 'Unauthorized')
 
-        // Проверяем что блог не обновился
+        // Проверяем что блог не изменился
         await request(app)
             .get(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}`)
             .expect(200, createdBlog)
-    })
-     // Пытаемя обновить secondCreatedBlog с неправильными данными
-    it("should'nt UPDATE video with incorrect input data ",async () => {
-        await request(app)
-            .put(`${RouterPaths.blogs}/${encodeURIComponent(secondCreatedBlog.id)}`)
-            .auth('admin', 'qwerty')
-            .send(wrongBlogData)
-            .expect(400, {
-                errorsMessages: [
-                    { message: 'Incorrect websiteUrl', field: 'websiteUrl' },
-                    { message: 'Incorrect description', field: 'description' },
-                    { message: 'Incorrect name', field: 'name' }
-                ]
-            })
-
-        // Попытка обновить без логина и пароля
-        await request(app)
-            .put(`${RouterPaths.blogs}/${encodeURIComponent(secondCreatedBlog.id)}`)
-            .auth('adminn', 'qwertn')
-            .send(wrongBlogData)
-            .expect(401, 'Unauthorized')
-
-        // Проверяем что блог не обновился
-        await request(app)
-            .get(`${RouterPaths.blogs}/${encodeURIComponent(secondCreatedBlog.id)}`)
-            .expect(200, secondCreatedBlog)
     })
 
     // Обновляем данные createdBlog
@@ -176,34 +153,17 @@ describe('/blogs', () => {
                  ...blogData
              })
 
+         // Проверяем что второй блог не изменился
+         await request(app)
+             .get(`${RouterPaths.blogs}/${encodeURIComponent(secondCreatedBlog.id)}`)
+             .expect(200, secondCreatedBlog)
+
          // Обновляем запись с первым блогом
          createdBlog = {
              ...createdBlog,
              ...blogData
          }
      })
-     // Обновляем данные второго блога
-    it("should UPDATE blogs with correct input data ",async () =>{
-        await request(app)
-            .put(`${RouterPaths.blogs}/${encodeURIComponent(secondCreatedBlog.id)}`)
-            .auth('admin', 'qwerty')
-            .send(blogData)
-            .expect(204)
-
-        // Проверяем что блог изменился
-        await request(app)
-            .get(`${RouterPaths.blogs}/${encodeURIComponent(secondCreatedBlog.id)}`)
-            .expect(200, {
-                ...secondCreatedBlog,
-                ...blogData
-            })
-
-        // Обновляем запись с блогом
-        secondCreatedBlog = {
-            ...secondCreatedBlog,
-            ...blogData
-        }
-    })
 
     // Удаляем createdBlog
     it("should DELETE blogs with correct id ",async () =>{
