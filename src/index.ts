@@ -1,7 +1,7 @@
 // noinspection AnonymousFunctionJS
 
 import {runDb} from "./db/db";
-import {app} from "../setting";
+import {app} from "./setting";
 import 'dotenv/config'
 
 

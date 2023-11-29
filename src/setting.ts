@@ -1,10 +1,8 @@
 import express from "express";
-import {postRoute} from "./src/routes/post.route";
-import {blogRoute} from "./src/routes/blog-route";
-import {deleteTestRoute} from "./src/routes/delete.test.route";
-import {indexRoute} from "./src/routes/index.route";
-import cors from "cors";
-
+import {postRoute} from "./routes/post.route";
+import {blogRoute} from "./routes/blog-route";
+import {deleteTestRoute} from "./routes/delete.test.route";
+import {indexRoute} from "./routes/index.route";
 
 export const app = express();
 
@@ -15,7 +13,7 @@ export const RouterPaths = {
     index: '/'
 };
 
-app.use(cors());
+
 app.use(express.json());
 app.use(RouterPaths.posts, postRoute);
 app.use(RouterPaths.blogs, blogRoute);

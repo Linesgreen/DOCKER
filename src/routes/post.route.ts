@@ -34,7 +34,6 @@ postRoute.put('/:id', authMiddleware, postPutValidation(), async (req: RequestWi
     const {title, shortDescription, content, blogId}: PostUpdateModel = req.body;
     const updateResult: boolean = await PostService.updatePost({title, shortDescription, content, blogId}, id);
     updateResult ? res.sendStatus(204) : res.sendStatus(404)
-
 });
 
 postRoute.delete('/:id', authMiddleware, async (req: RequestWithParams<PostParams>, res: Response) => {

@@ -1,6 +1,6 @@
 import {OutputPostType, PostType} from "../types/posts/output";
 import {PostCreateModel, PostUpdateModel} from "../types/posts/input";
-import {OutputBlogType} from "../types/blogs/output";
+import {OutputItemsBlogType} from "../types/blogs/output";
 import {PostRepository} from "../repositories/post-repository";
 import {BlogService} from "./blog-service";
 import {PostQueryRepository} from "../repositories/post-query-repository";
@@ -18,7 +18,7 @@ export class PostService {
 
     // Возвращает ID созданного поста
     static async addPost(params: PostCreateModel): Promise<string> {
-        const blog: OutputBlogType | null = await BlogService.getBlogById(params.blogId);
+        const blog: OutputItemsBlogType | null = await BlogService.getBlogById(params.blogId);
         const newPost: PostType = {
             title: params.title,
             shortDescription: params.shortDescription,

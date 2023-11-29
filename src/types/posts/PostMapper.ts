@@ -1,7 +1,7 @@
 import {WithId} from "mongodb";
 import {OutputPostType, PostType} from "./output";
 
-export const PostMapper = (post : WithId<PostType>) : OutputPostType => {
+export const PostMapper = (post: WithId<PostType>): OutputPostType => {
     return {
         id: post._id.toString(),
         title: post.title,
@@ -11,4 +11,4 @@ export const PostMapper = (post : WithId<PostType>) : OutputPostType => {
         blogName: post.blogName,
         createdAt: post.createdAt
     }
-}
+};

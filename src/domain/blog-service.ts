@@ -1,18 +1,13 @@
 import {BlogUpdateModel, PostBlogReqBody} from "../types/blogs/input";
-import {BlogType, OutputBlogType} from "../types/blogs/output";
+import {BlogType, OutputItemsBlogType} from "../types/blogs/output";
 import {BlogRepository} from "../repositories/blog-repository";
 import {BlogQueryRepository} from "../repositories/blog-query-repository";
 
 
 export class BlogService {
 
-    // Возвращает блоги переработанные в мапере
-    static async getAllBlogs(): Promise<OutputBlogType[]> {
-        return BlogQueryRepository.getAllBlogs()
-    }
-
     // Возвращает блог переработанный в мапере
-    static async getBlogById(id: string): Promise<OutputBlogType | null> {
+    static async getBlogById(id: string): Promise<OutputItemsBlogType | null> {
         return BlogQueryRepository.getBlogById(id)
     }
 
