@@ -2,20 +2,20 @@ export type BlogParams = {
     id: string
 }
 
-export type GetBlogsSortDataType = {
+export type BlogSortData = {
     searchNameTerm?: string
     sortBy?: string
     sortDirection?: 'asc' | 'desc'
-    pageNumber?: number
-    pageSize?: number
+    pageNumber?: string
+    pageSize?: string
 }
 
-export type SortData = {
-    searchNameTerm: string | null
-    sortBy: string
-    sortDirection: 'asc' | 'desc'
-    pageNumber: number
-    pageSize: number
+
+export type BlogsWithIdSortData = {
+    sortBy?: string
+    sortDirection?: 'asc' | 'desc'
+    pageNumber?: string
+    pageSize?: string
 }
 
 

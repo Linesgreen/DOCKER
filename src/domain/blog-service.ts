@@ -6,11 +6,6 @@ import {BlogQueryRepository} from "../repositories/blog-query-repository";
 
 export class BlogService {
 
-    // Возвращает блог переработанный в мапере
-    static async getBlogById(id: string): Promise<OutputItemsBlogType | null> {
-        return BlogQueryRepository.getBlogById(id)
-    }
-
     // Возвращает id созданного блога
     static async addBlog(params: PostBlogReqBody): Promise<string> {
         const newBlog: BlogType = {

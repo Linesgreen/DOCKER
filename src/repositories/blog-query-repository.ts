@@ -3,31 +3,38 @@ import {ObjectId, WithId} from "mongodb";
 import {blogCollection} from "../db/db";
 import {BLogMapper} from "../types/blogs/mapper";
 import {isValidObjectId} from "./utils/Objcet(Id)Chek";
-import {GetBlogsSortDataType, SortData} from "../types/blogs/input";
-import {constructorFilter} from "./utils/blog-query/constructorFilter";
+import {BlogSortData, BlogsWithIdSortData} from "../types/blogs/input";
+
+import {QueryBlogSortData} from "../types/blogs/query";
+import {ConstructorFilter} from "./utils/blog-query/constructorFilter";
+import {FilterType, SortType} from "../types/Mongo/params";
 
 export class BlogQueryRepository {
     // Возвращает блоги переработанные в мапере
-    static async getAllBlogs(sortData: GetBlogsSortDataType): Promise<OutputBlogType> {
-        const formattedSortData: SortData = {
+    static async getAllBlogs(sortData: BlogSortData): Promise<OutputBlogType> {
+
+        const formattedSortData: QueryBlogSortData = {
             searchNameTerm: sortData.searchNameTerm || null,
             sortBy: sortData.sortBy || 'createdAt',
             sortDirection: sortData.sortDirection || 'desc',
-            pageNumber: sortData.pageNumber || 1,
-            pageSize: sortData.pageSize || 10
+            pageNumber: sortData.pageNumber || '1',
+            pageSize: sortData.pageSize || '10'
         };
 
-        const mongoMethods = constructorFilter(formattedSortData);
+        const findFilter: FilterType | {} = ConstructorFilter.filter_Find(formattedSortData.searchNameTerm);
+        const sortFilter: SortType = ConstructorFilter.filter_Sort(formattedSortData.sortBy, formattedSortData.sortDirection);
+        const skipFilter: number = ConstructorFilter.filter_Skip(formattedSortData.pageNumber, formattedSortData.pageSize);
 
         const blogs: WithId<BlogType>[] = await blogCollection
-            .find(mongoMethods.filter)
-            .sort(mongoMethods.sort)
-            .skip(mongoMethods.skip)
-            .limit(mongoMethods.limit)
+            .find(findFilter)
+            .sort(sortFilter)
+            .skip(skipFilter)
+            .limit(+formattedSortData.pageSize)
             .toArray();
 
-        const totalCount = await blogCollection.countDocuments(mongoMethods.filter);
-        const pageCount = Math.ceil(totalCount / +formattedSortData.pageSize);
+        const totalCount: number = await blogCollection.countDocuments(findFilter);
+        const pageCount: number = Math.ceil(totalCount / +formattedSortData.pageSize);
+
         return {
             pagesCount: pageCount,
             page: +formattedSortData.pageNumber,
@@ -39,11 +46,18 @@ export class BlogQueryRepository {
     }
 
     // Возвращает блог переработанный в мапере
-    static async getBlogById(id: string): Promise<OutputItemsBlogType | null> {
+    static async getBlogById(id: string, sortData: BlogsWithIdSortData): Promise<OutputItemsBlogType | null> {
         try {
             if (!isValidObjectId(id)) {
                 throw new Error('id no objectID!');
             }
+
+            const formattedSortData = {
+                pageNumber: sortData.pageNumber || 1,
+                pageSize: sortData.pageSize || 10,
+                sortBy: sortData.sortBy || 'createdAt',
+                sortDirection: sortData.sortDirection || 'desc'
+            };
 
             const blog: WithId<BlogType> | null = await blogCollection.findOne({_id: new ObjectId(id)});
             return blog ? BLogMapper(blog) : null
@@ -53,6 +67,7 @@ export class BlogQueryRepository {
         }
 
     }
+
 
     // ⚠️Удаление всех блогов для тестов
     static async deleteAll() {

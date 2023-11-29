@@ -1,13 +1,19 @@
 // noinspection AnonymousFunctionJS,MagicNumberJS
 
 import {Router, Response} from "express";
-import {RequestWithBody, RequestWithBodyAndParams, RequestWithParams, RequestWithQuery} from "../types/common";
+import {
+    RequestWithBody,
+    RequestWithBodyAndParams,
+    RequestWithParams,
+    RequestWithQuery,
+    RequestWithQueryParams
+} from "../types/common";
 import {
     BlogCreateModel,
     BlogParams,
     BlogUpdateModel,
-    GetBlogsSortDataType,
-    PostBlogReqBody
+    BlogSortData,
+    PostBlogReqBody, BlogsWithIdSortData
 } from "../types/blogs/input";
 import {authMiddleware} from "../middlewares/auth/auth-middleware";
 import {blogPostValidation, blogPutValidation} from "../middlewares/blog/blogsValidator";
@@ -17,8 +23,8 @@ import {BlogQueryRepository} from "../repositories/blog-query-repository";
 
 export const blogRoute = Router({});
 
-blogRoute.get('/', async (req: RequestWithQuery<GetBlogsSortDataType>, res: Response<OutputBlogType>) => {
-    const sortData: GetBlogsSortDataType = {
+blogRoute.get('/', async (req: RequestWithQuery<BlogSortData>, res: Response<OutputBlogType>) => {
+    const sortData: BlogSortData = {
         searchNameTerm: req.query.searchNameTerm,
         sortBy: req.query.sortBy,
         sortDirection: req.query.sortDirection,
@@ -30,16 +36,23 @@ blogRoute.get('/', async (req: RequestWithQuery<GetBlogsSortDataType>, res: Resp
     res.send(blogs)
 });
 
-blogRoute.get('/:id', async (req: RequestWithParams<BlogParams>, res: Response<OutputItemsBlogType>) => {
+blogRoute.get('/:id', async (req: RequestWithQueryParams<BlogParams, BlogsWithIdSortData>, res: Response<OutputItemsBlogType>) => {
     const id: string = req.params.id;
-    const blog: OutputItemsBlogType | null = await BlogQueryRepository.getBlogById(id);
+    const sortData: BlogsWithIdSortData = {
+        pageNumber: req.query.pageNumber,
+        pageSize: req.query.pageSize,
+        sortBy: req.query.sortBy,
+        sortDirection: req.query.sortDirection
+    };
+
+    const blog: OutputItemsBlogType | null = await BlogQueryRepository.getBlogById(id, sortData);
     blog ? res.send(blog) : res.sendStatus(404)
 });
 
 blogRoute.post('/', authMiddleware, blogPostValidation(), async (req: RequestWithBody<BlogCreateModel>, res: Response<OutputItemsBlogType | null>) => {
     let {name, description, websiteUrl}: PostBlogReqBody = req.body;
     const newBlogId: string = await BlogService.addBlog({name, description, websiteUrl});
-    res.status(201).send(await BlogService.getBlogById(newBlogId))
+    res.status(201).send(await BlogQueryRepository.getBlogById(newBlogId))
 });
 
 blogRoute.put('/:id', authMiddleware, blogPutValidation(), async (req: RequestWithBodyAndParams<BlogParams, BlogUpdateModel>, res: Response) => {

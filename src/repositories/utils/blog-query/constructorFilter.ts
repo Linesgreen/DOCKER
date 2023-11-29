@@ -1,45 +1,34 @@
-// noinspection UnnecessaryLocalVariableJS
+// noinspection UnnecessaryLocalVariableJS,FunctionNamingConventionJS
 
-import {SortData} from "../../../types/blogs/input";
+import {FilterType, SortType} from "../../../types/Mongo/params";
 
-export function constructorFilter(sortData: SortData) {
 
-    // Создаем filter
-    let filter: { name: { $regex: string; $options: string } } | {};
-    if (sortData.searchNameTerm) {
-        filter = {
+
+export class ConstructorFilter {
+    //создаем фильтр
+    static filter_Find(searchEl: string | null): FilterType | {} {
+        return searchEl ? {
             name: {
-                $regex: sortData.searchNameTerm,
+                $regex: searchEl,
                 $options: 'i'
             }
-        };
-    } else {
-        filter = {};
+        } : {}
     }
 
-    //Создаем sort
-    let descOrAsc: 1 | -1;
-    if (sortData.sortDirection === 'asc') {
-        descOrAsc = 1
-    } else {
-        descOrAsc = -1
+    static filter_Sort(sortBy: string, sortDirection: string | undefined): SortType {
+        if (sortDirection === 'asc') {
+            return {
+                [sortBy]: 1
+            }
+        }
+        return {
+            [sortBy]: -1
+        }
     }
 
-    const sort = {
-        [sortData.sortBy]: descOrAsc
-    };
-
-    //Создаем skip
-    const skip: number = (+sortData.pageNumber - 1) * sortData.pageSize;
-    //Создаем limit
-    const limit: number = +sortData.pageSize;
-
-    const methods = {
-        filter: filter,
-        sort: sort,
-        skip: skip,
-        limit: limit
-    };
-
-    return methods
+    static filter_Skip(pageNumber: string, pageSize: string): number {
+        const skip: number = (+pageNumber - 1) * +pageSize;
+        return skip
+    }
 }
+
