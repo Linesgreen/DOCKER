@@ -10,20 +10,20 @@ import {app, RouterPaths} from "../../src/setting";
 describe('/posts', () => {
 
     // Очищаем БД
-    beforeAll(async ()=>{
+    beforeAll(async () => {
         await request(app)
             .delete('/testing/all-data')
     });
 
     // Проверяем что БД пустая
-    it('should return 200 and empty []',async () =>{
+    it('should return 200 and empty []', async () => {
         await request(app)
             .get(RouterPaths.posts)
             .expect(200, [])
     });
 
 
-    const wrongPostData : PostCreateModel = {
+    const wrongPostData: PostCreateModel = {
         title: "",
         shortDescription: "",
         content: "",
@@ -35,7 +35,7 @@ describe('/posts', () => {
 
 
     // Пытаемся создать пост с неправильными данными
-    it("should'nt create post with incorrect input data ",async () => {
+    it("should'nt create post with incorrect input data ", async () => {
         //Отсылаем неправильнные данные
         await request(app)
             .post(RouterPaths.posts)
@@ -64,7 +64,7 @@ describe('/posts', () => {
     });
 
     //Не проходим проверку логина и пароля
-    it("should'nt create post without login and pass ",async () => {
+    it("should'nt create post without login and pass ", async () => {
         await request(app)
             .post(RouterPaths.posts)
             .auth('aaaa', 'qwert')
@@ -73,25 +73,25 @@ describe('/posts', () => {
 
 
     //Переменные для хранения данных созданных постов
-    let createdPostData : OutputPostType;
-    let secondCreatedPost : OutputPostType;
+    let createdPostData: OutputPostType;
+    let secondCreatedPost: OutputPostType;
 
     // Создаем пост
-    it("should CREATE post with correct input data ",async () =>{
+    it("should CREATE post with correct input data ", async () => {
 
         // данные для создания блога
-        const blogCreateData : BlogCreateModel = {
+        const blogCreateData: BlogCreateModel = {
             name: "TestingPosts",
             description: "WhaitID",
             websiteUrl: "https://iaWvPbi4nnt1cAej2P1InTA.XtfqLdbJEXn29s9xpDzU762y._qXDYoZFu-TSCTCLhfR.RyF-B3dMemIrQ.INbBcnB3u"
         };
 
         // cоздаем блог, так как без него пост создать нельзя
-        const blogData  = (await blogTestManager.createBlog(blogCreateData, 201)).body;
+        const blogData = (await blogTestManager.createBlog(blogCreateData, 201)).body;
 
 
         //Заносим полученный айди Блога в создаваемый пост
-        postData  = {
+        postData = {
             title: "Test",
             shortDescription: "TestTestTestTestTest",
             content: "TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest",
@@ -111,7 +111,8 @@ describe('/posts', () => {
                     ...postData,
                     blogName: 'TestingPosts',
                     createdAt: expect.any(String)
-                })});
+                })
+            });
 
 
         //Проверяем что создался только один пост
@@ -120,10 +121,11 @@ describe('/posts', () => {
             .expect(200)
             .then(response => {
                 expect(response.body).toEqual([createdPostData])
-    })});
+            })
+    });
 
     // Создаем второй пост
-    it("should CREATE post with correct input data ",async () =>{
+    it("should CREATE post with correct input data ", async () => {
         await request(app)
             .post(RouterPaths.posts)
             .auth('admin', 'qwerty')
@@ -136,7 +138,8 @@ describe('/posts', () => {
                     ...postData,
                     blogName: 'TestingPosts',
                     createdAt: expect.any(String)
-                })});
+                })
+            });
 
         // Проверяем что созданные айди у двух постов разные
         expect(createdPostData.id).not.toEqual(secondCreatedPost.id);
@@ -148,44 +151,44 @@ describe('/posts', () => {
             .then(response => {
                 expect(response.body).toEqual([createdPostData, secondCreatedPost])
 
-    })});
-
+            })
+    });
 
 
     //Пытаемся обновить первый пост с неправильными данными
-    it("should'nt UPDATE post with incorrect input data ",async () => {
+    it("should'nt UPDATE post with incorrect input data ", async () => {
         await request(app)
             .put(`${RouterPaths.posts}/${encodeURIComponent(createdPostData.id)}`)
             .auth('admin', 'qwerty')
             .send(wrongPostData)
             .expect(400, {
                 errorsMessages: [
-                    { message: 'Incorrect title', field: 'title' },
+                    {message: 'Incorrect title', field: 'title'},
                     {
                         message: 'Incorrect shortDescription',
                         field: 'shortDescription'
                     },
-                    { message: 'Incorrect content', field: 'content' },
-                    { message: 'Incorrect blogId!', field: 'blogId' }
+                    {message: 'Incorrect content', field: 'content'},
+                    {message: 'Incorrect blogId!', field: 'blogId'}
                 ]
             });
 
-               // Попытка обновить без логина и пароля
-               await request(app)
-                   .put(`${RouterPaths.posts}/${encodeURIComponent(createdPostData.id)}`)
-                   .auth('adminn', 'qwertn')
-                   .send(postData)
-                   .expect(401, 'Unauthorized');
+        // Попытка обновить без логина и пароля
+        await request(app)
+            .put(`${RouterPaths.posts}/${encodeURIComponent(createdPostData.id)}`)
+            .auth('adminn', 'qwertn')
+            .send(postData)
+            .expect(401, 'Unauthorized');
 
-               // Проверяем что пост не обновился
-               await request(app)
-                   .get(`${RouterPaths.posts}/${encodeURIComponent(createdPostData.id)}`)
-                   .expect(200, createdPostData)
-           });
+        // Проверяем что пост не обновился
+        await request(app)
+            .get(`${RouterPaths.posts}/${encodeURIComponent(createdPostData.id)}`)
+            .expect(200, createdPostData)
+    });
 
 
     // Обновляем данные поста
-    it("should UPDATE post with correct input data ",async () =>{
+    it("should UPDATE post with correct input data ", async () => {
         await request(app)
             .put(`${RouterPaths.posts}/${encodeURIComponent(createdPostData.id)}`)
             .auth('admin', 'qwerty')
@@ -202,37 +205,37 @@ describe('/posts', () => {
             .expect(200, {
                 ...createdPostData,
                 ...postData,
-                title:'Lolik'
+                title: 'Lolik'
             })
 
     });
 
 // Удаляем пост
-it("should DELETE blogs with correct id ",async () =>{
-    await request(app)
-        .delete(`${RouterPaths.posts}/${encodeURIComponent(createdPostData.id)}`)
-        .auth('admin', 'qwerty')
-        .expect(204);
+    it("should DELETE blogs with correct id ", async () => {
+        await request(app)
+            .delete(`${RouterPaths.posts}/${encodeURIComponent(createdPostData.id)}`)
+            .auth('admin', 'qwerty')
+            .expect(204);
 
-    // Проверяем что второй блог на месте а первый удалился
-    await request(app)
-        .get(`${RouterPaths.posts}`)
-        .expect([secondCreatedPost])
+        // Проверяем что второй блог на месте а первый удалился
+        await request(app)
+            .get(`${RouterPaths.posts}`)
+            .expect([secondCreatedPost])
 
-});
+    });
 
 // Удаляем второй блог
-it("should DELETE video2 with correct input data ",async () => {
-    await request(app)
-        .delete(`${RouterPaths.posts}/${encodeURIComponent(secondCreatedPost.id)}`)
-        .auth('admin', 'qwerty')
-        .expect(204)
-});
+    it("should DELETE video2 with correct input data ", async () => {
+        await request(app)
+            .delete(`${RouterPaths.posts}/${encodeURIComponent(secondCreatedPost.id)}`)
+            .auth('admin', 'qwerty')
+            .expect(204)
+    });
 
 // Проверяем что БД пустая
-it('should return 200 and empty []',async () =>{
-    await request(app)
-        .get(RouterPaths.posts)
-        .expect(200, [])
-})
+    it('should return 200 and empty []', async () => {
+        await request(app)
+            .get(RouterPaths.posts)
+            .expect(200, [])
+    })
 });
