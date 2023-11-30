@@ -6,8 +6,6 @@ import {isValidObjectId} from "./utils/Objcet(Id)Chek";
 
 
 export class BlogRepository {
-    // Возвращает блоги переработанные в мапере
-
     // Возвращает id созданного блога
     static async addBlog(newBlog: BlogType): Promise<string> {
         const result = await blogCollection.insertOne(newBlog);

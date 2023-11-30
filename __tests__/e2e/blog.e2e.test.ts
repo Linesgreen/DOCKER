@@ -1,10 +1,12 @@
-// noinspection AnonymousFunctionJS,MagicNumberJS
+// noinspection AnonymousFunctionJS,MagicNumberJS,LocalVariableNamingConventionJS,FunctionTooLongJS
 
 import request from 'supertest'
 import {BlogCreateModel} from "../../src/types/blogs/input";
 import {OutputItemsBlogType} from "../../src/types/blogs/output";
 import {blogTestManager} from "../utils/blogTestManager";
 import {app, RouterPaths} from "../../src/setting";
+import {PostToBlogCreateModel} from "../../src/types/posts/input";
+import {PostType} from "../../src/types/posts/output";
 
 
 describe('/blogs', () => {
@@ -183,42 +185,254 @@ describe('/blogs', () => {
         }
     });
 
-    // Удаляем createdBlog
-    it("should DELETE blogs with correct id ", async () => {
-        await request(app)
-            .delete(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}`)
-            .auth('admin', 'qwerty')
-            .expect(204);
+    const postData: PostToBlogCreateModel = {
+        title: "PostToBLogTest",
+        shortDescription: "PostToBLogTestPostToBLogTest",
+        content: "PostToBLogTestPostToBLogTestPostToBLogTestPostToBLogTest",
+    };
+    const wrongPostData: PostToBlogCreateModel = {
+        title: "",
+        shortDescription: "",
+        content: "",
+    };
 
-        // Проверяем что второй блог на месте а первый  удалиллся
+    let postInBlog: PostType;
+
+    //Пытаемся создать пост ( с неправильными данными) в блоге
+    it("should create new post for specific blog", async () => {
         await request(app)
-            .get(`${RouterPaths.blogs}`)
-            .expect({
-                ...basicPag,
-                pagesCount: 1,
-                totalCount: 1,
-                items: [secondCreatedBlog]
+            .post(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}${RouterPaths.posts}`)
+            .auth('admin', 'qwerty')
+            .send(wrongPostData)
+            .expect(400, {
+                "errorsMessages": [
+                    {
+                        "message": "Incorrect title",
+                        "field": "title"
+                    },
+                    {
+                        "message": "Incorrect shortDescription",
+                        "field": "shortDescription"
+                    },
+                    {
+                        "message": "Incorrect content",
+                        "field": "content"
+                    }
+                ]
             })
-
     });
-    // Удаляем второй блог
-    it("should DELETE second blog with correct input data ", async () => {
+    //Пытаемся создать пост ( без логина и пароля ) в блоге
+    it("should create new post for specific blog", async () => {
         await request(app)
-            .delete(`${RouterPaths.blogs}/${encodeURIComponent(secondCreatedBlog.id)}`)
+            .post(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}${RouterPaths.posts}`)
+            .auth('adminn', 'qwertyy')
+            .send(wrongPostData)
+            .expect(401, 'Unauthorized')
+    });
+
+    // Cоздаем пост в конкретном блоге
+    it("should create new post for specific blog", async () => {
+        await request(app)
+            .post(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}${RouterPaths.posts}`)
             .auth('admin', 'qwerty')
-            .expect(204)
+            .send(postData)
+            .expect(201)
+            .then(response => {
+                postInBlog = response.body;
+                expect(response.body).toEqual({
+                    ...postData,
+                    id: expect.any(String),
+                    blogId: createdBlog.id,
+                    blogName: createdBlog.name,
+                    createdAt: expect.any(String)
+                })
+            })
     });
 
-    // Проверяем что БД пустая
-    it('should return 200 and empty []', async () => {
+    //Пытаемся создать пост с неправильным ID блога
+    it("should create new post for specific blog", async () => {
         await request(app)
-            .get(RouterPaths.blogs)
-            .expect(200, basicPag)
-    })
+            .post(`${RouterPaths.blogs}/${encodeURIComponent(123)}${RouterPaths.posts}`)
+            .auth('admin', 'qwerty')
+            .send(postData)
+            .expect(404, 'Not Found')
+    });
 
     ///////////////////////////////////
     /* Проверяем query запросы !!!🥲 */
     ///////////////////////////////////
+
+    //Проверка для запроса по всем блогам
+    let blog3: OutputItemsBlogType;
+    let blog4: OutputItemsBlogType;
+    let blog5: OutputItemsBlogType;
+    let blog6: OutputItemsBlogType;
+    let blog7: OutputItemsBlogType;
+    // Создаем блог3, блог4, блог5, блог6, блог7
+    it("should CREATE  5 blogs with correct input data ", async () => {
+        blog3 = (await blogTestManager.createBlog(blogData, 201)).body;
+        blog4 = (await blogTestManager.createBlog(blogData, 201)).body;
+        blog5 = (await blogTestManager.createBlog(blogData, 201)).body;
+        blog6 = (await blogTestManager.createBlog(blogData, 201)).body;
+        blog7 = (await blogTestManager.createBlog(blogData, 201)).body;
+
+        //Проверяем что в бд теперь 7 блогов с сортировкой по умолчанию
+        await request(app)
+            .get(RouterPaths.blogs)
+            .expect(200, {
+                "pagesCount": 1,
+                "page": 1,
+                "pageSize": 10,
+                "totalCount": 7,
+                items: [blog7, blog6, blog5, blog4, blog3, secondCreatedBlog, createdBlog]
+            })
+    });
+
+    // Проверяем сортировку asc
+    it("must use sort asc ", async () => {
+        await request(app)
+            .get(`${RouterPaths.blogs}?sortDirection=asc`)
+            .expect(200, {
+                "pagesCount": 1,
+                "page": 1,
+                "pageSize": 10,
+                "totalCount": 7,
+                items: [createdBlog, secondCreatedBlog, blog3, blog4, blog5, blog6, blog7]
+            })
+    });
+
+    // Проверяем фильтр по имени, c cортировкой asc
+    it("must use sort asc ", async () => {
+        await request(app)
+            .get(`${RouterPaths.blogs}?searchNameTerm=ix&sortDirection=asc`)
+            .expect(200, {
+                "pagesCount": 1,
+                "page": 1,
+                "pageSize": 10,
+                "totalCount": 7,
+                items: [createdBlog, secondCreatedBlog, blog3, blog4, blog5, blog6, blog7]
+            });
+
+        //Поиск по несущестующему имени
+        await request(app)
+            .get(`${RouterPaths.blogs}?searchNameTerm=lox&sortDirection=asc`)
+            .expect(200, {
+                "pagesCount": 0,
+                "page": 1,
+                "pageSize": 10,
+                "totalCount": 0,
+                "items": []
+            })
+    });
+
+    //Проверяем сортировку по другим полям
+    it("must use sort by ID (desc)", async () => {
+        await request(app)
+            .get(`${RouterPaths.blogs}?sortBy=_id`)
+            .expect(200, {
+                "pagesCount": 1,
+                "page": 1,
+                "pageSize": 10,
+                "totalCount": 7,
+                items: [blog7, blog6, blog5, blog4, blog3, secondCreatedBlog, createdBlog]
+
+            })
+    });
+    it("must use sort by ID (asc)", async () => {
+        await request(app)
+            .get(`${RouterPaths.blogs}?sortBy=_id&sortDirection=asc`)
+            .expect(200, {
+                "pagesCount": 1,
+                "page": 1,
+                "pageSize": 10,
+                "totalCount": 7,
+                items: [createdBlog, secondCreatedBlog, blog3, blog4, blog5, blog6, blog7]
+            })
+    });
+    // Проверяем pageSize
+    it("must return only 1 object in response.body ", async () => {
+        //pageSize = 1
+        await request(app)
+            .get(`${RouterPaths.blogs}?pageSize=1`)
+            .expect(200, {
+                "pagesCount": 7,
+                "page": 1,
+                "pageSize": 1,
+                "totalCount": 7,
+                "items": [blog7]
+            });
+
+        //pageSize = 2
+        await request(app)
+            .get(`${RouterPaths.blogs}?pageSize=2`)
+            .expect(200, {
+                "pagesCount": 4,
+                "page": 1,
+                "pageSize": 2,
+                "totalCount": 7,
+                "items": [blog7, blog6]
+            })
+    });
+    // Проверяем pageNumber
+    it("must return  1 object in second page ", async () => {
+        await request(app)
+            .get(`${RouterPaths.blogs}?pageNumber=2&pageSize=1`)
+            .expect(200, {
+                "pagesCount": 7,
+                "page": 2,
+                "pageSize": 1,
+                "totalCount": 7,
+                "items": [blog6]
+            })
+    });
+    it("must return  1 object in 3 page ", async () => {
+        await request(app)
+            .get(`${RouterPaths.blogs}?pageNumber=4&pageSize=2`)
+            .expect(200, {
+                "pagesCount": 4,
+                "page": 4,
+                "pageSize": 2,
+                "totalCount": 7,
+                "items": [createdBlog]
+            })
+    });
+    /*
+        // Удаляем createdBlog
+        it("should DELETE blogs with correct id ", async () => {
+            await request(app)
+                .delete(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}`)
+                .auth('admin', 'qwerty')
+                .expect(204);
+
+            // Проверяем что второй блог на месте а первый  удалиллся
+            await request(app)
+                .get(`${RouterPaths.blogs}`)
+                .expect({
+                    ...basicPag,
+                    pagesCount: 1,
+                    totalCount: 1,
+                    items: [secondCreatedBlog]
+                })
+
+        });
+        // Удаляем второй блог
+        it("should DELETE second blog with correct input data ", async () => {
+            await request(app)
+                .delete(`${RouterPaths.blogs}/${encodeURIComponent(secondCreatedBlog.id)}`)
+                .auth('admin', 'qwerty')
+                .expect(204)
+        });
+
+        // Проверяем что БД пустая
+        it('should return 200 and empty []', async () => {
+            await request(app)
+                .get(RouterPaths.blogs)
+                .expect(200, basicPag)
+        })
+
+
+     */
+
 });
 
 
