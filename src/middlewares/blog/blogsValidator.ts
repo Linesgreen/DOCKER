@@ -3,6 +3,7 @@
 import {body} from "express-validator";
 import {inputModelValidation} from "../inputModel/input-model-Validation";
 import {BlogService} from "../../domain/blog-service";
+import {BlogQueryRepository} from "../../repositories/blog-query-repository";
 
 export const nameValidation = body('name')
     .isString()
@@ -26,7 +27,7 @@ export const websiteUrlValidation = body('websiteUrl')
 
 
 export const blogIdValidation = body('blogId').isString().trim().custom(async (value) => {
-    const blog = await BlogService.getBlogById(value);
+    const blog = await BlogQueryRepository.getBlogById(value);
     if (!blog) {
         throw new Error('Incorrect blogId!')
     }

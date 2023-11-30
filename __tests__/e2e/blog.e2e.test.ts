@@ -9,22 +9,30 @@ import {app, RouterPaths} from "../../src/setting";
 
 describe('/blogs', () => {
     // Очищаем БД
-    beforeAll(async ()=>{
+    beforeAll(async () => {
         await request(app)
             .delete('/testing/all-data')
-});
+    });
 
+    const basicPag = {
+        "pagesCount": 0,
+        "page": 1,
+        "pageSize": 10,
+        "totalCount": 0,
+        "items": []
+    };
 
     // Проверяем что БД пустая
-    it('should return 200 and empty []',async () =>{
-       await request(app)
+    it('should return 200 and empty []', async () => {
+        await request(app)
             .get(RouterPaths.blogs)
-            .expect(200, [])
+            .expect(200, basicPag)
     });
 
     //Переменные для хранения данных созданных видео
     let createdBlog: OutputItemsBlogType;
     let secondCreatedBlog: OutputItemsBlogType;
+    // базвая пагинация
 
     const blogData: BlogCreateModel = {
         "name": "Felix",
@@ -40,7 +48,7 @@ describe('/blogs', () => {
 
 
     // Пытаемся создать блог с неправильными данными
-    it("should'nt create blogs with incorrect input data ",async () => {
+    it("should'nt create blogs with incorrect input data ", async () => {
 
         //Отсылаем неправильнные данные
         const createResponse = await blogTestManager.createBlog(wrongBlogData, 400);
@@ -49,16 +57,16 @@ describe('/blogs', () => {
         const errorsMessage = createResponse.body;
         expect(errorsMessage).toEqual({
             errorsMessages: [
-                { message: 'Incorrect websiteUrl', field: 'websiteUrl' },
-                { message: 'Incorrect description', field: 'description' },
-                { message: 'Incorrect name', field: 'name' }
+                {message: 'Incorrect websiteUrl', field: 'websiteUrl'},
+                {message: 'Incorrect description', field: 'description'},
+                {message: 'Incorrect name', field: 'name'}
             ]
         })
 
     });
 
     //Не проходим проверку логина и пароля
-    it("should'nt create blogs without login and pass ",async () => {
+    it("should'nt create blogs without login and pass ", async () => {
         await request(app)
             .post(RouterPaths.blogs)
             .auth('aaaa', 'qwert')
@@ -66,20 +74,26 @@ describe('/blogs', () => {
     });
 
 
-
     // Создаем блог
     it("should CREATE blogs with correct input data ", async () => {
         const createResponse = await blogTestManager.createBlog(blogData, 201);
-
         //Проверяем что созданный блог соответствует заданным параметрам
         createdBlog = createResponse.body;
         expect(createdBlog).toEqual({
-            "id": expect.any(String),
-            "name": "Felix",
-            "description": "Secret",
-            "websiteUrl": "https://iaWvPbi4nnt1cAej2P1InTA.XtfqLdbJEXn29s9xpDzU762y._qXDYoZFu-TSCTCLhfR.RyF-B3dMemIrQ.INbBcnB3u",
-            "createdAt": expect.any(String),
-            "isMembership": false
+            pagesCount: 1,
+            page: 1,
+            pageSize: 10,
+            totalCount: 1,
+            items: [
+                {
+                    id: '6568bc1b7b957fbdd1b7d25c',
+                    name: 'Felix',
+                    description: 'Secret',
+                    websiteUrl: 'https://iaWvPbi4nnt1cAej2P1InTA.XtfqLdbJEXn29s9xpDzU762y._qXDYoZFu-TSCTCLhfR.RyF-B3dMemIrQ.INbBcnB3u',
+                    createdAt: '2023-11-30T16:45:15.941Z',
+                    isMembership: false
+                }
+            ]
         });
 
         //Проверяем что создался только один блог
@@ -93,7 +107,7 @@ describe('/blogs', () => {
         const createResponse = await blogTestManager.createBlog(blogData, 201);
 
         //Проверяем что созданный блог соответствует заданным параметрам
-        secondCreatedBlog =  createResponse.body;
+        secondCreatedBlog = createResponse.body;
         expect(secondCreatedBlog).toEqual({
             "id": expect.any(String),
             "name": "Felix",
@@ -113,7 +127,7 @@ describe('/blogs', () => {
     });
 
     //Пытаемся обновить createdBlog c неправильными данными
-    it("should'nt UPDATE video with incorrect input data ",async () => {
+    it("should'nt UPDATE video with incorrect input data ", async () => {
         await request(app)
             .put(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}`)
             .auth('admin', 'qwerty')
@@ -140,7 +154,7 @@ describe('/blogs', () => {
     });
 
     // Обновляем данные createdBlog
-    it("should UPDATE blogs with correct input data ",async () =>{
+    it("should UPDATE blogs with correct input data ", async () => {
         await request(app)
             .put(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}`)
             .auth('admin', 'qwerty')
@@ -168,20 +182,20 @@ describe('/blogs', () => {
     });
 
     // Удаляем createdBlog
-    it("should DELETE blogs with correct id ",async () =>{
+    it("should DELETE blogs with correct id ", async () => {
         await request(app)
             .delete(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}`)
             .auth('admin', 'qwerty')
             .expect(204);
 
-         // Проверяем что второй блог на месте а первый  удалиллся
-         await request(app)
-             .get(`${RouterPaths.blogs}`)
-             .expect([secondCreatedBlog])
+        // Проверяем что второй блог на месте а первый  удалиллся
+        await request(app)
+            .get(`${RouterPaths.blogs}`)
+            .expect([secondCreatedBlog])
 
     });
     // Удаляем второй блог
-    it("should DELETE second blog with correct input data ",async () => {
+    it("should DELETE second blog with correct input data ", async () => {
         await request(app)
             .delete(`${RouterPaths.blogs}/${encodeURIComponent(secondCreatedBlog.id)}`)
             .auth('admin', 'qwerty')
@@ -189,10 +203,10 @@ describe('/blogs', () => {
     });
 
     // Проверяем что БД пустая
-    it('should return 200 and empty []',async () =>{
+    it('should return 200 and empty []', async () => {
         await request(app)
             .get(RouterPaths.blogs)
-            .expect(200, [])
+            .expect(200, basicPag)
     })
 
 });

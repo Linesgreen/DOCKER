@@ -2,7 +2,7 @@
 
 import request from "supertest";
 import {PostCreateModel} from "../../src/types/posts/input";
-import {OutputPostType} from "../../src/types/posts/output";
+import {OutputItemsPostType} from "../../src/types/posts/output";
 import {BlogCreateModel} from "../../src/types/blogs/input";
 import {blogTestManager} from "../utils/blogTestManager";
 import {app, RouterPaths} from "../../src/setting";
@@ -73,8 +73,8 @@ describe('/posts', () => {
 
 
     //Переменные для хранения данных созданных постов
-    let createdPostData: OutputPostType;
-    let secondCreatedPost: OutputPostType;
+    let createdPostData: OutputItemsPostType;
+    let secondCreatedPost: OutputItemsPostType;
 
     // Создаем пост
     it("should CREATE post with correct input data ", async () => {

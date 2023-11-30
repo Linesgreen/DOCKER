@@ -1,8 +1,9 @@
-import {PostType} from "../types/posts/output";
-import {PostUpdateModel} from "../types/posts/input";
+import {OutputItemsPostType, PostType} from "../types/posts/output";
+import {PostSortData, PostUpdateModel} from "../types/posts/input";
 import {postCollection} from "../db/db";
-import {ObjectId} from "mongodb";
+import {ObjectId, WithId} from "mongodb";
 import {isValidObjectId} from "./utils/Objcet(Id)Chek";
+import {PostMapper} from "../types/posts/PostMapper";
 
 export class PostRepository {
 
@@ -45,6 +46,5 @@ export class PostRepository {
             return false
         }
     }
-
 }
 

@@ -6,7 +6,7 @@ import {app, RouterPaths} from "../../src/setting";
 
 
 export const blogTestManager = {
-    async createBlog(blogData : BlogCreateModel, status: number) {
+    async createBlog(blogData: BlogCreateModel, status: number) {
         const response = await request(app)
             .post(RouterPaths.blogs)
             .auth('admin', 'qwerty')

@@ -1,7 +1,7 @@
 // noinspection MagicNumberJS,AnonymousFunctionJS
 
 import {Router, Request, Response} from "express";
-import {OutputPostType, PostType} from "../types/posts/output";
+import {OutputItemsPostType, PostType} from "../types/posts/output";
 import {RequestWithBody, RequestWithBodyAndParams, RequestWithParams} from "../types/common";
 import {PostCreateModel, PostParams, PostUpdateModel,} from "../types/posts/input";
 import {authMiddleware} from "../middlewares/auth/auth-middleware";
@@ -13,7 +13,7 @@ export const postRoute = Router({});
 
 
 postRoute.get('/', async (_req: Request, res: Response<PostType[]>) => {
-    const posts: OutputPostType[] = await PostQueryRepository.getAllPosts();
+    const posts: OutputItemsPostType[] = await PostQueryRepository.getAllPosts();
     res.send(posts)
 });
 

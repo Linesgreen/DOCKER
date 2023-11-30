@@ -1,25 +1,27 @@
-import {OutputPostType, PostType} from "../types/posts/output";
-import {PostCreateModel, PostUpdateModel} from "../types/posts/input";
+import {OutputItemsPostType, PostType} from "../types/posts/output";
+import {PostCreateModel, PostSortData, PostUpdateModel} from "../types/posts/input";
 import {OutputItemsBlogType} from "../types/blogs/output";
 import {PostRepository} from "../repositories/post-repository";
 import {BlogService} from "./blog-service";
 import {PostQueryRepository} from "../repositories/post-query-repository";
+import {BlogQueryRepository} from "../repositories/blog-query-repository";
 
 export class PostService {
     //Возвращает посты переработанные в мапере
-    static async getAllPosts(): Promise<OutputPostType[]> {
-        return PostQueryRepository.getAllPosts()
+    static async getAllPosts(): Promise<OutputItemsPostType[]> {
+        return await PostQueryRepository.getAllPosts()
     }
 
     //Возвращает пост переработанный в мапере
-    static async getPostById(id: string): Promise<OutputPostType | null> {
-        return PostQueryRepository.getPostById(id)
+    static async getPostById(id: string): Promise<OutputItemsPostType | null> {
+        return await PostQueryRepository.getPostById(id)
     }
 
     // Возвращает ID созданного поста
     static async addPost(params: PostCreateModel): Promise<string> {
-        const blog: OutputItemsBlogType | null = await BlogService.getBlogById(params.blogId);
+        const blog: OutputItemsBlogType | null = await BlogQueryRepository.getBlogById(params.blogId);
         const newPost: PostType = {
+            /*id присваивает БД */
             title: params.title,
             shortDescription: params.shortDescription,
             content: params.content,
@@ -27,7 +29,7 @@ export class PostService {
             blogName: blog!.name,
             createdAt: new Date().toISOString()
         };
-        return PostRepository.addPost(newPost)
+        return await PostRepository.addPost(newPost)
     }
 
     //Возвращает ✅true (пост найден), ❌false (пост не найден)

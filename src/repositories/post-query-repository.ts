@@ -1,18 +1,22 @@
-import {OutputPostType, PostType} from "../types/posts/output";
+import {OutputItemsPostType, OutputPostType, PostType} from "../types/posts/output";
 import {ObjectId, WithId} from "mongodb";
 import {postCollection} from "../db/db";
 import {PostMapper} from "../types/posts/PostMapper";
 import {isValidObjectId} from "./utils/Objcet(Id)Chek";
+import {PostSortData} from "../types/posts/input";
+import {ConvertedBlogSortData, ConvertedPostSortData} from "../types/blogs/query";
+import {SortType} from "../types/Mongo/params";
+import {ConstructorFilter} from "./utils/blog-query/constructorFilter";
 
 export class PostQueryRepository {
     //Возвращает посты переработанные в мапере
-    static async getAllPosts(): Promise<OutputPostType[]> {
+    static async getAllPosts(): Promise<OutputItemsPostType[]> {
         const posts: WithId<PostType>[] = await postCollection.find({}).toArray();
         return posts.map(PostMapper)
     }
 
     //Возвращает пост переработанный в мапере
-    static async getPostById(id: string): Promise<OutputPostType | null> {
+    static async getPostById(id: string): Promise<OutputItemsPostType | null> {
         try {
             if (!isValidObjectId(id)) {
                 throw new Error('id no objectID!');
@@ -28,6 +32,50 @@ export class PostQueryRepository {
     // ⚠️Удаление всех постов для тестов
     static async deleteAll() {
         await postCollection.deleteMany({})
+    }
+
+    //Возвращает посты переработанные в мапере, принадлежащие конкретному блогу
+    static async getAllPostsInBlog(id: string, sortData: PostSortData): Promise<OutputPostType | null> {
+        try {
+            if (!isValidObjectId(id)) {
+                throw new Error('id no objectID!');
+            }
+            const formattedSortData: ConvertedPostSortData = {
+                sortBy: sortData.sortBy || 'createdAt',
+                sortDirection: sortData.sortDirection || 'desc',
+                pageNumber: sortData.pageNumber || '1',
+                pageSize: sortData.pageSize || '10'
+            };
+
+            const sortFilter: SortType = ConstructorFilter.filter_Sort(formattedSortData.sortBy, formattedSortData.sortDirection);
+            const skipFilter: number = ConstructorFilter.filter_Skip(formattedSortData.pageNumber, formattedSortData.pageSize);
+            const posts: WithId<PostType>[] = await postCollection
+                .find({blogId: id})
+                .sort(sortFilter)
+                .skip(skipFilter)
+                .limit(+formattedSortData.pageSize)
+                .toArray();
+
+            const totalPostCount: number = await postCollection.countDocuments({blogId: id});
+            const pagePostCount: number = Math.ceil(totalPostCount / +formattedSortData.pageSize);
+
+            return {
+                pagesCount: pagePostCount,
+                page: +formattedSortData.pageNumber,
+                pageSize: +formattedSortData.pageSize,
+                totalCount: +totalPostCount,
+                items: posts.map(PostMapper)
+            }
+
+
+        } catch (e) {
+            console.log(e);
+            return null
+        }
+
+
+
+
     }
 
 }
