@@ -80,26 +80,23 @@ describe('/blogs', () => {
         //Проверяем что созданный блог соответствует заданным параметрам
         createdBlog = createResponse.body;
         expect(createdBlog).toEqual({
-            pagesCount: 1,
-            page: 1,
-            pageSize: 10,
-            totalCount: 1,
-            items: [
-                {
-                    id: '6568bc1b7b957fbdd1b7d25c',
-                    name: 'Felix',
-                    description: 'Secret',
-                    websiteUrl: 'https://iaWvPbi4nnt1cAej2P1InTA.XtfqLdbJEXn29s9xpDzU762y._qXDYoZFu-TSCTCLhfR.RyF-B3dMemIrQ.INbBcnB3u',
-                    createdAt: '2023-11-30T16:45:15.941Z',
-                    isMembership: false
-                }
-            ]
+            "id": expect.any(String),
+            "name": "Felix",
+            "description": "Secret",
+            "websiteUrl": "https://iaWvPbi4nnt1cAej2P1InTA.XtfqLdbJEXn29s9xpDzU762y._qXDYoZFu-TSCTCLhfR.RyF-B3dMemIrQ.INbBcnB3u",
+            "createdAt": expect.any(String),
+            "isMembership": false
         });
 
         //Проверяем что создался только один блог
         await request(app)
             .get(RouterPaths.blogs)
-            .expect(200, [createdBlog])
+            .expect(200, {
+                ...basicPag,
+                pagesCount: 1,
+                totalCount: 1,
+                items: [createdBlog]
+            })
     });
 
     // Создаем второй блог
@@ -123,7 +120,12 @@ describe('/blogs', () => {
         //Проверяем что в бд теперь два блога
         await request(app)
             .get(RouterPaths.blogs)
-            .expect(200, [createdBlog, secondCreatedBlog])
+            .expect(200, {
+                ...basicPag,
+                pagesCount: 1,
+                totalCount: 2,
+                items: [secondCreatedBlog, createdBlog]
+            })
     });
 
     //Пытаемся обновить createdBlog c неправильными данными
@@ -191,7 +193,12 @@ describe('/blogs', () => {
         // Проверяем что второй блог на месте а первый  удалиллся
         await request(app)
             .get(`${RouterPaths.blogs}`)
-            .expect([secondCreatedBlog])
+            .expect({
+                ...basicPag,
+                pagesCount: 1,
+                totalCount: 1,
+                items: [secondCreatedBlog]
+            })
 
     });
     // Удаляем второй блог
@@ -209,6 +216,9 @@ describe('/blogs', () => {
             .expect(200, basicPag)
     })
 
+    ///////////////////////////////////
+    /* Проверяем query запросы !!!🥲 */
+    ///////////////////////////////////
 });
 
 
