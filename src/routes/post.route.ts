@@ -12,6 +12,7 @@ import {PostQueryRepository} from "../repositories/post-query-repository";
 export const postRoute = Router({});
 
 
+
 postRoute.get('/', async (req: RequestWithQuery<PostSortData>, res: Response<OutputPostType>) => {
     const sortData: PostSortData = {
         sortBy: req.query.sortBy,
