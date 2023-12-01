@@ -2,8 +2,8 @@
 
 import {body} from "express-validator";
 import {inputModelValidation} from "../inputModel/input-model-Validation";
-import {BlogService} from "../../domain/blog-service";
 import {BlogQueryRepository} from "../../repositories/blog-query-repository";
+import {NextFunction, Request, Response} from "express";
 
 export const nameValidation = body('name')
     .isString()
@@ -26,13 +26,23 @@ export const websiteUrlValidation = body('websiteUrl')
     .withMessage('Incorrect websiteUrl');
 
 
-export const blogIdValidation = body('blogId').isString().trim().custom(async (value) => {
+export const blogIdValidationInBody = body('blogId').isString().trim().custom(async (value) => {
     const blog = await BlogQueryRepository.getBlogById(value);
     if (!blog) {
         throw new Error('Incorrect blogId!')
     }
     return true
 }).withMessage('Incorrect blogId!');
+
+export const blogIdInParamsMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+    const blogIg: string = req.params.id;
+    const blog = await BlogQueryRepository.getBlogById(blogIg);
+    if (!blog) {
+        res.sendStatus(404);
+        return undefined;
+    }
+    return next()
+};
 
 
 export const blogPostValidation = () => [websiteUrlValidation, descriptionValidation, nameValidation, inputModelValidation];

@@ -4,10 +4,10 @@ import {blogCollection, postCollection} from "../db/db";
 import {PostMapper} from "../types/posts/PostMapper";
 import {isValidObjectId} from "./utils/Objcet(Id)Chek";
 import {PostSortData} from "../types/posts/input";
-import {ConvertedBlogSortData, ConvertedPostSortData} from "../types/blogs/query";
-import {FilterType, SortType} from "../types/Mongo/params";
+import {ConvertedPostSortData} from "../types/blogs/query";
+import {SortType} from "../types/Mongo/params";
 import {ConstructorFilter} from "./utils/blog-query/constructorFilter";
-import {BLogMapper} from "../types/blogs/mapper";
+
 
 export class PostQueryRepository {
     //Возвращает посты переработанные в мапере
@@ -18,7 +18,7 @@ export class PostQueryRepository {
             pageNumber: sortData.pageNumber || '1',
             pageSize: sortData.pageSize || '10'
         };
-        const sortFilter: SortType = ConstructorFilter.filter_Sort(formattedSortData.sortBy, formattedSortData.sortDirection)
+        const sortFilter: SortType = ConstructorFilter.filter_Sort(formattedSortData.sortBy, formattedSortData.sortDirection);
         const skipFilter: number = ConstructorFilter.filter_Skip(formattedSortData.pageNumber, formattedSortData.pageSize);
         const posts: WithId<PostType>[] = await postCollection
             .find({})
@@ -82,7 +82,6 @@ export class PostQueryRepository {
 
             const totalPostCount: number = await postCollection.countDocuments({blogId: id});
             const pagePostCount: number = Math.ceil(totalPostCount / +formattedSortData.pageSize);
-
             return {
                 pagesCount: pagePostCount,
                 page: +formattedSortData.pageNumber,

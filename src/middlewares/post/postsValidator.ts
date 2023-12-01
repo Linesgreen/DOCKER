@@ -1,5 +1,5 @@
 import {body} from "express-validator";
-import {blogIdValidation, descriptionValidation, nameValidation, websiteUrlValidation} from "../blog/blogsValidator";
+import {blogIdValidationInBody,} from "../blog/blogsValidator";
 import {inputModelValidation} from "../inputModel/input-model-Validation";
 
 export const titleValidation = body('title')
@@ -20,8 +20,8 @@ export const contentValidation = body('content')
     .isLength({min: 1, max: 1000})
     .withMessage('Incorrect content');
 
-export const postPostValidation = () => [titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, inputModelValidation];
+export const postPostValidation = () => [titleValidation, shortDescriptionValidation, contentValidation, blogIdValidationInBody, inputModelValidation];
 export const postInBlogValidation = () => [titleValidation, shortDescriptionValidation, contentValidation, inputModelValidation];
 
 
-export const postPutValidation = () => [titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, inputModelValidation];
+export const postPutValidation = () => [titleValidation, shortDescriptionValidation, contentValidation, blogIdValidationInBody, inputModelValidation];

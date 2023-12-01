@@ -16,7 +16,11 @@ import {
     PostBlogReqBody,
 } from "../types/blogs/input";
 import {authMiddleware} from "../middlewares/auth/auth-middleware";
-import {blogPostValidation, blogPutValidation} from "../middlewares/blog/blogsValidator";
+import {
+    blogIdInParamsMiddleware,
+    blogPostValidation,
+    blogPutValidation,
+} from "../middlewares/blog/blogsValidator";
 import {OutputItemsBlogType, OutputBlogType} from "../types/blogs/output";
 import {BlogService} from "../domain/blog-service";
 import {BlogQueryRepository} from "../repositories/blog-query-repository";
@@ -24,6 +28,7 @@ import {PostSortData, PostToBlogCreateModel} from "../types/posts/input";
 import {PostQueryRepository} from "../repositories/post-query-repository";
 import {OutputItemsPostType, OutputPostType} from "../types/posts/output";
 import {postInBlogValidation} from "../middlewares/post/postsValidator";
+
 
 
 export const blogRoute = Router({});
@@ -60,7 +65,7 @@ blogRoute.get('/:id/posts', async (req: RequestWithQueryAndParams<BlogParams, Po
 });
 
 
-blogRoute.get('/:id', async (req: RequestWithParams<BlogParams>, res: Response<OutputItemsBlogType>) => {
+blogRoute.get('/:id', blogIdInParamsMiddleware, async (req: RequestWithParams<BlogParams>, res: Response<OutputItemsBlogType>) => {
     const id: string = req.params.id;
     const blog: OutputItemsBlogType | null = await BlogQueryRepository.getBlogById(id);
     blog ? res.send(blog) : res.sendStatus(404)
