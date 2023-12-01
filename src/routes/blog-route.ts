@@ -41,7 +41,7 @@ blogRoute.get('/', async (req: RequestWithQuery<BlogSortData>, res: Response<Out
     res.send(blogs)
 });
 
-////////////////////////////////////////////////////////////////////////////////////////////
+
 blogRoute.get('/:id/posts', async (req: RequestWithQueryAndParams<BlogParams, PostSortData>, res: Response<OutputPostType>) => {
     const blogId: string = req.params.id;
     const sortData: PostSortData = {
@@ -58,28 +58,11 @@ blogRoute.get('/:id/posts', async (req: RequestWithQueryAndParams<BlogParams, Po
     }
     res.status(200).send(posts)
 });
-////////////////////////////////////////////////////////////////////////////////////////////
 
 
-blogRoute.get('/:id', async ( req: RequestWithParams<BlogParams>,
-                             //req: RequestWithQueryParams<BlogParams,BlogsWithIdSortData>,
-                             res: Response<OutputItemsBlogType>
-) => {
+blogRoute.get('/:id', async (req: RequestWithParams<BlogParams>, res: Response<OutputItemsBlogType>) => {
     const id: string = req.params.id;
-    /*
-    const sortData: BlogsWithIdSortData = {
-        pageNumber: req.query.pageNumber,
-        pageSize: req.query.pageSize,
-        sortBy: req.query.sortBy,
-        sortDirection: req.query.sortDirection
-    };
-
-     */
-
-    const blog: OutputItemsBlogType | null = await BlogQueryRepository.getBlogById(
-        id
-        //, sortData
-    );
+    const blog: OutputItemsBlogType | null = await BlogQueryRepository.getBlogById(id);
     blog ? res.send(blog) : res.sendStatus(404)
 });
 

@@ -7,16 +7,6 @@ import {PostQueryRepository} from "../repositories/post-query-repository";
 import {BlogQueryRepository} from "../repositories/blog-query-repository";
 
 export class PostService {
-    //Возвращает посты переработанные в мапере
-    static async getAllPosts(): Promise<OutputItemsPostType[]> {
-        return await PostQueryRepository.getAllPosts()
-    }
-
-    //Возвращает пост переработанный в мапере
-    static async getPostById(id: string): Promise<OutputItemsPostType | null> {
-        return await PostQueryRepository.getPostById(id)
-    }
-
     // Возвращает ID созданного поста
     static async addPost(params: PostCreateModel): Promise<string> {
         const blog: OutputItemsBlogType | null = await BlogQueryRepository.getBlogById(params.blogId);

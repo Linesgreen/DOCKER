@@ -46,24 +46,11 @@ export class BlogQueryRepository {
     }
 
     // Возвращает блог переработанный в мапере
-    static async getBlogById(
-        id: string,
-        //sortData: BlogsWithIdSortData
-    ): Promise<OutputItemsBlogType | null> {
+    static async getBlogById(id: string): Promise<OutputItemsBlogType | null> {
         try {
             if (!isValidObjectId(id)) {
                 throw new Error('id no objectID!');
             }
-            /*
-            const formattedSortData = {
-                pageNumber: sortData.pageNumber || 1,
-                pageSize: sortData.pageSize || 10,
-                sortBy: sortData.sortBy || 'createdAt',
-                sortDirection: sortData.sortDirection || 'desc'
-            };
-
-             */
-
             const blog: WithId<BlogType> | null = await blogCollection.findOne({_id: new ObjectId(id)});
             return blog ? BLogMapper(blog) : null
         } catch (error) {
@@ -72,7 +59,6 @@ export class BlogQueryRepository {
         }
 
     }
-
 
     // ⚠️Удаление всех блогов для тестов
     static async deleteAll() {
