@@ -249,6 +249,19 @@ describe('/blogs', () => {
             })
     });
 
+    //Проверяем что создался пост в блоге createdBlog
+    it("should return 1 post in createdBlog", async () => {
+        await request(app)
+            .get(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}${RouterPaths.posts}`)
+            .expect(200, {
+                pagesCount: 1,
+                page: 1,
+                pageSize: 10,
+                totalCount: 1,
+                items: [postInBlog]
+            })
+    });
+
     //Пытаемся создать пост с неправильным ID блога
     it("should create new post for specific blog", async () => {
         await request(app)
@@ -262,7 +275,7 @@ describe('/blogs', () => {
     /* Проверяем query запросы !!!🥲 */
     ///////////////////////////////////
 
-    //Проверка для запроса по всем блогам
+    //Проверка для запроса по всем блогам//
     let blog3: OutputItemsBlogType;
     let blog4: OutputItemsBlogType;
     let blog5: OutputItemsBlogType;
@@ -350,7 +363,7 @@ describe('/blogs', () => {
             })
     });
     // Проверяем pageSize
-    it("must return only 1 object in response.body ", async () => {
+    it("must return  pageSize * object in response.body ", async () => {
         //pageSize = 1
         await request(app)
             .get(`${RouterPaths.blogs}?pageSize=1`)
@@ -374,7 +387,7 @@ describe('/blogs', () => {
             })
     });
     // Проверяем pageNumber
-    it("must return  1 object in second page ", async () => {
+    it("must return  1 object on second page ", async () => {
         await request(app)
             .get(`${RouterPaths.blogs}?pageNumber=2&pageSize=1`)
             .expect(200, {
@@ -385,7 +398,7 @@ describe('/blogs', () => {
                 "items": [blog6]
             })
     });
-    it("must return  1 object in 3 page ", async () => {
+    it("must return  1 object on page number 3 ", async () => {
         await request(app)
             .get(`${RouterPaths.blogs}?pageNumber=4&pageSize=2`)
             .expect(200, {
@@ -396,43 +409,137 @@ describe('/blogs', () => {
                 "items": [createdBlog]
             })
     });
-    /*
-        // Удаляем createdBlog
-        it("should DELETE blogs with correct id ", async () => {
-            await request(app)
-                .delete(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}`)
-                .auth('admin', 'qwerty')
-                .expect(204);
 
-            // Проверяем что второй блог на месте а первый  удалиллся
-            await request(app)
-                .get(`${RouterPaths.blogs}`)
-                .expect({
-                    ...basicPag,
-                    pagesCount: 1,
-                    totalCount: 1,
-                    items: [secondCreatedBlog]
-                })
+    //Проверяем создание постов для конкретного блога//
+    let post2: PostType;
+    let post3: PostType;
+    let post4: PostType;
+    let post5: PostType;
+    //Создаем еще 4 поста в блоге ( всего их теперь 5)
+    it("should CREATE post in blog ", async () => {
+        post2 = (await blogTestManager.createPostInBlog(createdBlog.id, postData, 201)).body;
+        post3 = (await blogTestManager.createPostInBlog(createdBlog.id, postData, 201)).body;
+        post4 = (await blogTestManager.createPostInBlog(createdBlog.id, postData, 201)).body;
+        post5 = (await blogTestManager.createPostInBlog(createdBlog.id, postData, 201)).body;
+    });
 
-        });
-        // Удаляем второй блог
-        it("should DELETE second blog with correct input data ", async () => {
-            await request(app)
-                .delete(`${RouterPaths.blogs}/${encodeURIComponent(secondCreatedBlog.id)}`)
-                .auth('admin', 'qwerty')
-                .expect(204)
-        });
+    it("should return 5 posts for createdBlog ", async () => {
+        await request(app)
+            .get(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}${RouterPaths.posts}`)
+            .expect(200, {
+                "pagesCount": 1,
+                "page": 1,
+                "pageSize": 10,
+                "totalCount": 5,
+                "items": [post5, post4, post3, post2, postInBlog]
+            })
+    });
+    //Проверяем pageSize = 2
+    it("should return 2 on first page ", async () => {
+        await request(app)
+            .get(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}${RouterPaths.posts}/?pageSize=2`)
+            .expect(200, {
+                "pagesCount": 3,
+                "page": 1,
+                "pageSize": 2,
+                "totalCount": 5,
+                "items": [post5, post4]
+            })
+    });
+    //Проверяем pageSize = 3
+    it("should return 3 on first page ", async () => {
+        await request(app)
+            .get(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}${RouterPaths.posts}/?pageSize=3`)
+            .expect(200, {
+                "pagesCount": 2,
+                "page": 1,
+                "pageSize": 3,
+                "totalCount": 5,
+                "items": [post5, post4, post3]
+            })
+    });
+    //Проверяем pageSize = 2 и сортировку asc
+    it("should return 3 on first page ", async () => {
+        await request(app)
+            .get(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}${RouterPaths.posts}/?pageSize=3&sortDirection=asc`)
+            .expect(200, {
+                "pagesCount": 2,
+                "page": 1,
+                "pageSize": 3,
+                "totalCount": 5,
+                "items": [postInBlog, post2, post3]
+            })
+    });
+    //Проверяем pageSize = 3 и sortBy _id
+    it("should return 3 on first page ", async () => {
+        await request(app)
+            .get(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}${RouterPaths.posts}/?pageSize=3&sortBy=_id`)
+            .expect(200, {
+                "pagesCount": 2,
+                "page": 1,
+                "pageSize": 3,
+                "totalCount": 5,
+                "items": [post5, post4, post3]
+            })
+    });
+    //Проверяем pageSize = 3 и sortBy _id ASC
+    it("should return 3 on first page ", async () => {
+        await request(app)
+            .get(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}${RouterPaths.posts}/?pageSize=3&sortDirection=asc&sortBy=_id`)
+            .expect(200, {
+                "pagesCount": 2,
+                "page": 1,
+                "pageSize": 3,
+                "totalCount": 5,
+                "items": [postInBlog, post2, post3]
+            })
+    });
 
-        // Проверяем что БД пустая
-        it('should return 200 and empty []', async () => {
-            await request(app)
-                .get(RouterPaths.blogs)
-                .expect(200, basicPag)
-        })
+    ///////////////////////////
+    ///Конец проверки query///
+    //////////////////////////
 
+    // Удаляем createdBlog
+    it("should DELETE blogs with correct id ", async () => {
+        await request(app)
+            .delete(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}`)
+            .auth('admin', 'qwerty')
+            .expect(204);
+    });
 
-     */
+    //Проверяем что в бд теперь 6 блогов с сортировкой по умолчанию
+    it("should return 6 blogs ", async () => {
+        await request(app)
+            .get(RouterPaths.blogs)
+            .expect(200, {
+                "pagesCount": 1,
+                "page": 1,
+                "pageSize": 10,
+                "totalCount": 6,
+                items: [blog7, blog6, blog5, blog4, blog3, secondCreatedBlog]
+            })
+    });
 
+    // Удаляем secondCreatedBlog блог
+    it("should DELETE second blog with correct input data ", async () => {
+        await request(app)
+            .delete(`${RouterPaths.blogs}/${encodeURIComponent(secondCreatedBlog.id)}`)
+            .auth('admin', 'qwerty')
+            .expect(204)
+    });
+
+    //Проверяем что в бд теперь 5 блогов с сортировкой по умолчанию
+    it("should return 5 blogs ", async () => {
+        await request(app)
+            .get(RouterPaths.blogs)
+            .expect(200, {
+                "pagesCount": 1,
+                "page": 1,
+                "pageSize": 10,
+                "totalCount": 5,
+                items: [blog7, blog6, blog5, blog4, blog3]
+            })
+    });
 });
 
 
