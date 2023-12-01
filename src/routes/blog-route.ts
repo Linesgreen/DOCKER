@@ -47,7 +47,7 @@ blogRoute.get('/', async (req: RequestWithQuery<BlogSortData>, res: Response<Out
 });
 
 
-blogRoute.get('/:id/posts', async (req: RequestWithQueryAndParams<BlogParams, PostSortData>, res: Response<OutputPostType>) => {
+blogRoute.get('/:id/posts',blogIdInParamsMiddleware, async (req: RequestWithQueryAndParams<BlogParams, PostSortData>, res: Response<OutputPostType>) => {
     const blogId: string = req.params.id;
     const sortData: PostSortData = {
         sortBy: req.query.sortBy,
