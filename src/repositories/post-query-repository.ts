@@ -1,6 +1,6 @@
 import {OutputItemsPostType, OutputPostType, PostType} from "../types/posts/output";
 import {ObjectId, WithId} from "mongodb";
-import {blogCollection, postCollection} from "../db/db";
+import {postCollection} from "../db/db";
 import {PostMapper} from "../types/posts/PostMapper";
 import {isValidObjectId} from "./utils/Objcet(Id)Chek";
 import {PostSortData} from "../types/posts/input";
@@ -27,7 +27,7 @@ export class PostQueryRepository {
             .limit(+formattedSortData.pageSize)
             .toArray();
 
-        const totalCount: number = await blogCollection.countDocuments({});
+        const totalCount: number = await postCollection.countDocuments({});
         const pageCount: number = Math.ceil(totalCount / +formattedSortData.pageSize);
 
         return {
