@@ -1,28 +1,43 @@
-// noinspection MagicNumberJS
+// noinspection MagicNumberJS,AnonymousFunctionJS
 
 import {Router, Response} from "express";
 import {UserService} from "../domain/user-service";
-import {RequestWithBody} from "../types/common";
-import {UserCreateModel} from "../types/users/input";
+import {RequestWithBody, RequestWithParams, RequestWithQuery} from "../types/common";
+import {UserCreateModel, UserSortData} from "../types/users/input";
 import {UserQueryRepository} from "../repositories/user-query-repository";
-import {UserOutputType} from "../types/users/output";
-
+import {UserOutputType, UserWithPaginationOutputType} from "../types/users/output";
+import {authMiddleware} from "../middlewares/auth/auth-middleware";
+import {PostParams} from "../types/posts/input";
 
 export const usersRoute = Router({});
 
-usersRoute.get('/', async (_req, res) => {
-    const users: UserOutputType[] = await UserQueryRepository.getAllUsers();
+usersRoute.get('/', authMiddleware, async (req: RequestWithQuery<UserSortData>, res: Response) => {
+    const sortData: UserSortData = {
+        searchEmailTerm: req.query.searchEmailTerm,
+        searchLoginTerm: req.query.searchLoginTerm,
+        sortBy: req.query.sortBy,
+        sortDirection: req.query.sortDirection,
+        pageNumber: req.query.pageNumber,
+        pageSize: req.query.pageSize
+    };
+    const users: UserWithPaginationOutputType = await UserQueryRepository.getAllUsers(sortData);
     res.status(200).send(users)
 });
 
 
-usersRoute.post('/', async (req: RequestWithBody<UserCreateModel> ,res: Response<UserOutputType | null>) => {
+usersRoute.post('/', authMiddleware, async (req: RequestWithBody<UserCreateModel>, res: Response<UserOutputType | null>) => {
     const userData: UserCreateModel = {
         login: req.body.login,
         password: req.body.password,
         email: req.body.email
     };
-    const newUserId = await UserService.addUser(userData);
+    const newUserId: string = await UserService.addUser(userData);
     const newUser: UserOutputType | null = await UserQueryRepository.getUserById(newUserId);
     res.status(201).send(newUser);
+});
+
+usersRoute.delete('/:id', authMiddleware, async (req: RequestWithParams<PostParams>, res: Response) => {
+    const id: string = req.params.id;
+    const deleteResult: boolean = await UserService.deleteUserByID(id);
+    deleteResult ? res.sendStatus(204) : res.sendStatus(404)
 });

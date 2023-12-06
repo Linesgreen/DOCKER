@@ -21,7 +21,7 @@ export class BlogQueryRepository {
             pageSize: sortData.pageSize || '10'
         };
 
-        const findFilter: FilterType | {} = ConstructorFilter.filter_Find(formattedSortData.searchNameTerm);
+        const findFilter: FilterType = ConstructorFilter.filter_Find_NameTerm(formattedSortData.searchNameTerm);
         const sortFilter: SortType = ConstructorFilter.filter_Sort(formattedSortData.sortBy, formattedSortData.sortDirection);
         const skipFilter: number = ConstructorFilter.filter_Skip(formattedSortData.pageNumber, formattedSortData.pageSize);
 

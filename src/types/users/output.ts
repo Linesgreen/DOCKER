@@ -12,4 +12,13 @@ export type UserOutputType = {
     "createdAt": string
 }
 
+// noinspection JSClassNamingConvention
+export type UserWithPaginationOutputType = {
+    pagesCount: number
+    page: number
+    pageSize: number
+    totalCount: number
+    items: UserOutputType[]
+}
+
 

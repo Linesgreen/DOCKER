@@ -8,6 +8,7 @@ import {authMiddleware} from "../middlewares/auth/auth-middleware";
 import {postPostValidation, postPutValidation} from "../middlewares/post/postsValidator";
 import {PostService} from "../domain/post-service";
 import {PostQueryRepository} from "../repositories/post-query-repository";
+import {UserParams} from "../types/users/input";
 
 export const postRoute = Router({});
 
@@ -43,7 +44,7 @@ postRoute.put('/:id', authMiddleware, postPutValidation(), async (req: RequestWi
     updateResult ? res.sendStatus(204) : res.sendStatus(404)
 });
 
-postRoute.delete('/:id', authMiddleware, async (req: RequestWithParams<PostParams>, res: Response) => {
+postRoute.delete('/:id', authMiddleware, async (req: RequestWithParams<UserParams>, res: Response) => {
     const id: string = req.params.id;
     const deleteResult: boolean = await PostService.deletePostById(id);
     deleteResult ? res.sendStatus(204) : res.sendStatus(404)

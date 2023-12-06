@@ -1,14 +1,45 @@
 import {isValidObjectId} from "./utils/Objcet(Id)Chek";
 import {userCollection} from "../db/db";
 import {ObjectId, WithId} from "mongodb";
-import {UserDBType, UserOutputType} from "../types/users/output";
+import {UserDBType, UserOutputType, UserWithPaginationOutputType} from "../types/users/output";
 import {UserMapper} from "../types/users/UserMapper";
+import {UserSortData} from "../types/users/input";
+import {ConvertedUserSortData} from "../types/users/query";
+import {ConstructorFilter} from "./utils/blog-query/constructorFilter";
+import {FilterType, SortType} from "../types/Mongo/params";
 
 export class UserQueryRepository {
-    static async getAllUsers(): Promise<UserOutputType[]> {
-        const usersFromDB: WithId<UserDBType>[] = await userCollection.find({}).toArray();
-        return usersFromDB.map(UserMapper)
+    static async getAllUsers(sortData: UserSortData): Promise<UserWithPaginationOutputType> {
+        const formattedSortData: ConvertedUserSortData = {
+            searchEmailTerm: sortData.searchEmailTerm || null,
+            searchLoginTerm: sortData.searchLoginTerm || null,
+            sortBy: sortData.sortBy || 'createdAt',
+            sortDirection: sortData.sortDirection || "desc",
+            pageNumber: sortData.pageNumber || '1',
+            pageSize: sortData.pageSize || '10'
+        };
+        const findFilter: FilterType = ConstructorFilter.filter_Find_EmailAndLoginTerm(formattedSortData.searchEmailTerm, formattedSortData.searchLoginTerm);
+        const sortFilter: SortType = ConstructorFilter.filter_Sort(formattedSortData.sortBy, formattedSortData.sortDirection);
+        const skipFilter: number = ConstructorFilter.filter_Skip(formattedSortData.pageNumber, formattedSortData.pageSize);
+
+        const usersFromDB: WithId<UserDBType>[] = await userCollection
+            .find(findFilter)
+            .sort(sortFilter)
+            .skip(skipFilter)
+            .limit(+formattedSortData.pageSize)
+            .toArray();
+        const totalCount: number = await userCollection.countDocuments(findFilter);
+        const pageCount: number = Math.ceil(totalCount / +formattedSortData.pageSize);
+        return {
+            pagesCount: pageCount,
+            page: +formattedSortData.pageNumber,
+            pageSize: +formattedSortData.pageSize,
+            totalCount: +totalCount,
+            items: usersFromDB.map(UserMapper)
+        }
+
     }
+
     static async getUserById(id: string): Promise<UserOutputType | null> {
         try {
             if (!isValidObjectId(id)) {
