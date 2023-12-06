@@ -11,14 +11,6 @@ export type BlogSortData = {
 }
 
 
-export type BlogsWithIdSortData = {
-    sortBy?: string
-    sortDirection?: 'asc' | 'desc'
-    pageNumber?: string
-    pageSize?: string
-}
-
-
 export type PostBlogReqBody = {
     name: string,
     description: string,

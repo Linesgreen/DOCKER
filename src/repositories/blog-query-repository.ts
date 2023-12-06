@@ -3,7 +3,7 @@ import {ObjectId, WithId} from "mongodb";
 import {blogCollection} from "../db/db";
 import {BLogMapper} from "../types/blogs/mapper";
 import {isValidObjectId} from "./utils/Objcet(Id)Chek";
-import {BlogSortData, BlogsWithIdSortData} from "../types/blogs/input";
+import {BlogSortData} from "../types/blogs/input";
 
 import {ConvertedBlogSortData} from "../types/blogs/query";
 import {ConstructorFilter} from "./utils/blog-query/constructorFilter";

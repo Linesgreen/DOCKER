@@ -5,17 +5,3 @@ export type ConvertedBlogSortData = {
     pageNumber: string
     pageSize: string
 }
-
-export type QueryBlogWithIdSortData = {
-    sortBy: string
-    sortDirection: 'asc' | 'desc'
-    pageNumber: string
-    pageSize: string
-}
-
-export type ConvertedPostSortData = {
-    sortBy: string
-    sortDirection: 'asc' | 'desc'
-    pageNumber: string
-    pageSize: string
-}

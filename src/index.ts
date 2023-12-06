@@ -4,7 +4,6 @@ import {runDb} from "./db/db";
 import {app} from "./setting";
 import 'dotenv/config'
 
-
 export const port = process.env.PORT || 5001;
 
 app.listen(port, async () => {

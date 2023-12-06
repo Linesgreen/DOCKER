@@ -4,4 +4,3 @@ export type ConvertedPostSortData = {
     pageNumber: string
     pageSize: string
 }
-

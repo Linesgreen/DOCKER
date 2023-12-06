@@ -1,5 +1,5 @@
 export type PostParams = {
-    id : string
+    id: string
 }
 
 export type PostCreateModel = {

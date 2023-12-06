@@ -161,7 +161,7 @@ describe('/posts',
                         "pagesCount": 1,
                         "page": 1,
                         "pageSize": 10,
-                        "totalCount": 1,
+                        "totalCount": 2,
                         "items": [secondCreatedPost,createdPostData]
                     })
 
@@ -224,7 +224,7 @@ describe('/posts',
 
         });
 
-// Удаляем пост
+        // Удаляем пост
         it("should DELETE blogs with correct id ", async () => {
             await request(app)
                 .delete(`${RouterPaths.posts}/${encodeURIComponent(createdPostData.id)}`)
@@ -244,7 +244,7 @@ describe('/posts',
 
         });
 
-// Удаляем второй пост
+        // Удаляем второй пост
         it("should DELETE video2 with correct input data ", async () => {
             await request(app)
                 .delete(`${RouterPaths.posts}/${encodeURIComponent(secondCreatedPost.id)}`)
@@ -252,15 +252,15 @@ describe('/posts',
                 .expect(204)
         });
 
-// Проверяем что БД пустая
+        // Проверяем что БД пустая
         it('should return 200 and empty []', async () => {
             await request(app)
                 .get(RouterPaths.posts)
                 .expect(200, {
-                    "pagesCount": 1,
+                    "pagesCount": 0,
                     "page": 1,
                     "pageSize": 10,
-                    "totalCount": 1,
+                    "totalCount": 0,
                     "items": []
                 })
         });
@@ -270,7 +270,7 @@ describe('/posts',
         /* Проверяем query запросы !!!🥲 */
         ///////////////////////////////////
 
-//Проверка для запроса по всем постам
+        //Проверка для запроса по всем постам
         let post1: OutputItemsPostType;
         let post2: OutputItemsPostType;
         let post3: OutputItemsPostType;

@@ -4,9 +4,9 @@ import {postCollection} from "../db/db";
 import {PostMapper} from "../types/posts/PostMapper";
 import {isValidObjectId} from "./utils/Objcet(Id)Chek";
 import {PostSortData} from "../types/posts/input";
-import {ConvertedPostSortData} from "../types/blogs/query";
 import {SortType} from "../types/Mongo/params";
 import {ConstructorFilter} from "./utils/blog-query/constructorFilter";
+import {ConvertedPostSortData} from "../types/posts/query";
 
 
 export class PostQueryRepository {

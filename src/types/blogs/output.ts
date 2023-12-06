@@ -9,7 +9,7 @@ export type OutputItemsBlogType = {
 
 // noinspection JSClassNamingConvention
 export type OutputBlogType = {
-    pagesCount: any
+    pagesCount: number
     page: number
     pageSize: number
     totalCount: number

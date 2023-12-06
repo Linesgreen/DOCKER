@@ -2,8 +2,6 @@
 
 import {FilterType, SortType} from "../../../types/Mongo/params";
 
-
-
 export class ConstructorFilter {
     //создаем фильтр
     static filter_Find(searchEl: string | null): FilterType | {} {
