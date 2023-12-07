@@ -7,7 +7,7 @@ import {PostCreateModel, PostParams, PostSortData, PostUpdateModel,} from "../ty
 import {authMiddleware} from "../middlewares/auth/auth-middleware";
 import {postPostValidation, postPutValidation} from "../middlewares/post/postsValidator";
 import {PostService} from "../domain/post-service";
-import {PostQueryRepository} from "../repositories/post-query-repository";
+import {PostQueryRepository} from "../repositories/query repository/post-query-repository";
 import {UserParams} from "../types/users/input";
 
 export const postRoute = Router({});

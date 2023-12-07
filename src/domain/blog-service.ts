@@ -1,10 +1,10 @@
 import {BlogUpdateModel, PostBlogReqBody} from "../types/blogs/input";
 import {BlogType, OutputItemsBlogType} from "../types/blogs/output";
-import {BlogRepository} from "../repositories/blog-repository";
-import {BlogQueryRepository} from "../repositories/blog-query-repository";
+import {BlogRepository} from "../repositories/repositury/blog-repository";
+import {BlogQueryRepository} from "../repositories/query repository/blog-query-repository";
 import {PostToBlogCreateModel} from "../types/posts/input";
 import {PostType} from "../types/posts/output";
-import {PostRepository} from "../repositories/post-repository";
+import {PostRepository} from "../repositories/repositury/post-repository";
 
 
 export class BlogService {

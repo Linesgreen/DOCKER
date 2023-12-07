@@ -4,10 +4,11 @@ import {Router, Response} from "express";
 import {UserService} from "../domain/user-service";
 import {RequestWithBody, RequestWithParams, RequestWithQuery} from "../types/common";
 import {UserCreateModel, UserSortData} from "../types/users/input";
-import {UserQueryRepository} from "../repositories/user-query-repository";
+import {UserQueryRepository} from "../repositories/query repository/user-query-repository";
 import {UserOutputType, UserWithPaginationOutputType} from "../types/users/output";
 import {authMiddleware} from "../middlewares/auth/auth-middleware";
 import {PostParams} from "../types/posts/input";
+import {userPostValidation} from "../middlewares/user/userValidatior";
 
 export const usersRoute = Router({});
 
@@ -25,7 +26,7 @@ usersRoute.get('/', authMiddleware, async (req: RequestWithQuery<UserSortData>, 
 });
 
 
-usersRoute.post('/', authMiddleware, async (req: RequestWithBody<UserCreateModel>, res: Response<UserOutputType | null>) => {
+usersRoute.post('/', authMiddleware, userPostValidation(), async (req: RequestWithBody<UserCreateModel>, res: Response<UserOutputType | null>) => {
     const userData: UserCreateModel = {
         login: req.body.login,
         password: req.body.password,

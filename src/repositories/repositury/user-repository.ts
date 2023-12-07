@@ -1,6 +1,6 @@
-import {UserDBType} from "../types/users/output";
-import {userCollection} from "../db/db";
-import {isValidObjectId} from "./utils/Objcet(Id)Chek";
+import {UserDBType} from "../../types/users/output";
+import {userCollection} from "../../db/db";
+import {isValidObjectId} from "../utils/Objcet(Id)Chek";
 import {ObjectId, WithId} from "mongodb";
 
 // noinspection UnnecessaryLocalVariableJS

@@ -1,9 +1,9 @@
-import {OutputItemsPostType, PostType} from "../types/posts/output";
-import {PostSortData, PostUpdateModel} from "../types/posts/input";
-import {postCollection} from "../db/db";
-import {ObjectId, WithId} from "mongodb";
-import {isValidObjectId} from "./utils/Objcet(Id)Chek";
-import {PostMapper} from "../types/posts/PostMapper";
+import {PostType} from "../../types/posts/output";
+import {PostUpdateModel} from "../../types/posts/input";
+import {postCollection} from "../../db/db";
+import {ObjectId} from "mongodb";
+import {isValidObjectId} from "../utils/Objcet(Id)Chek";
+
 
 export class PostRepository {
 

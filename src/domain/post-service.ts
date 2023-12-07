@@ -1,8 +1,8 @@
 import {PostType} from "../types/posts/output";
 import {PostCreateModel, PostUpdateModel} from "../types/posts/input";
 import {OutputItemsBlogType} from "../types/blogs/output";
-import {PostRepository} from "../repositories/post-repository";
-import {BlogQueryRepository} from "../repositories/blog-query-repository";
+import {PostRepository} from "../repositories/repositury/post-repository";
+import {BlogQueryRepository} from "../repositories/query repository/blog-query-repository";
 
 export class PostService {
     // Возвращает ID созданного поста

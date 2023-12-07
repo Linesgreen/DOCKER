@@ -1,13 +1,13 @@
-import {BlogType, OutputItemsBlogType, OutputBlogType} from "../types/blogs/output";
+import {BlogType, OutputItemsBlogType, OutputBlogType} from "../../types/blogs/output";
 import {ObjectId, WithId} from "mongodb";
-import {blogCollection} from "../db/db";
-import {BLogMapper} from "../types/blogs/mapper";
-import {isValidObjectId} from "./utils/Objcet(Id)Chek";
-import {BlogSortData} from "../types/blogs/input";
+import {blogCollection} from "../../db/db";
+import {BLogMapper} from "../../types/blogs/mapper";
+import {isValidObjectId} from "../utils/Objcet(Id)Chek";
+import {BlogSortData} from "../../types/blogs/input";
 
-import {ConvertedBlogSortData} from "../types/blogs/query";
-import {ConstructorFilter} from "./utils/blog-query/constructorFilter";
-import {FilterType, SortType} from "../types/Mongo/params";
+import {ConvertedBlogSortData} from "../../types/blogs/query";
+import {ConstructorFilter} from "../utils/blog-query/constructorFilter";
+import {FilterType, SortType} from "../../types/Mongo/params";
 
 export class BlogQueryRepository {
     // Возвращает блоги переработанные в мапере, отфильтрованные и разбитые на страницы

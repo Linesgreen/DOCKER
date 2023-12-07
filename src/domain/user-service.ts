@@ -1,7 +1,7 @@
 import {UserCreateModel} from "../types/users/input";
 import bcrypt from 'bcrypt'
 import {UserDBType} from "../types/users/output";
-import {UserRepository} from "../repositories/user-repository";
+import {UserRepository} from "../repositories/repositury/user-repository";
 import {WithId} from "mongodb";
 
 // noinspection UnnecessaryLocalVariableJS

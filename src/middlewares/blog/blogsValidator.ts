@@ -2,7 +2,7 @@
 
 import {body} from "express-validator";
 import {inputModelValidation} from "../inputModel/input-model-Validation";
-import {BlogQueryRepository} from "../../repositories/blog-query-repository";
+import {BlogQueryRepository} from "../../repositories/query repository/blog-query-repository";
 import {NextFunction, Request, Response} from "express";
 
 export const nameValidation = body('name')

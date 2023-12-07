@@ -1,12 +1,12 @@
-import {OutputItemsPostType, OutputPostType, PostType} from "../types/posts/output";
+import {OutputItemsPostType, OutputPostType, PostType} from "../../types/posts/output";
 import {ObjectId, WithId} from "mongodb";
-import {postCollection} from "../db/db";
-import {PostMapper} from "../types/posts/PostMapper";
-import {isValidObjectId} from "./utils/Objcet(Id)Chek";
-import {PostSortData} from "../types/posts/input";
-import {SortType} from "../types/Mongo/params";
-import {ConstructorFilter} from "./utils/blog-query/constructorFilter";
-import {ConvertedPostSortData} from "../types/posts/query";
+import {postCollection} from "../../db/db";
+import {PostMapper} from "../../types/posts/PostMapper";
+import {isValidObjectId} from "../utils/Objcet(Id)Chek";
+import {PostSortData} from "../../types/posts/input";
+import {SortType} from "../../types/Mongo/params";
+import {ConstructorFilter} from "../utils/blog-query/constructorFilter";
+import {ConvertedPostSortData} from "../../types/posts/query";
 
 
 export class PostQueryRepository {
@@ -95,8 +95,6 @@ export class PostQueryRepository {
             console.log(e);
             return null
         }
-
-
 
 
     }

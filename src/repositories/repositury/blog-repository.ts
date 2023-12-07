@@ -1,8 +1,8 @@
-import {BlogUpdateModel} from "../types/blogs/input";
-import {BlogType} from "../types/blogs/output";
-import {blogCollection} from "../db/db";
+import {BlogUpdateModel} from "../../types/blogs/input";
+import {BlogType} from "../../types/blogs/output";
+import {blogCollection} from "../../db/db";
 import {ObjectId} from "mongodb";
-import {isValidObjectId} from "./utils/Objcet(Id)Chek";
+import {isValidObjectId} from "../utils/Objcet(Id)Chek";
 
 
 export class BlogRepository {
