@@ -162,7 +162,7 @@ describe('/posts',
                         "page": 1,
                         "pageSize": 10,
                         "totalCount": 2,
-                        "items": [secondCreatedPost,createdPostData]
+                        "items": [secondCreatedPost, createdPostData]
                     })
 
                 })
@@ -321,7 +321,7 @@ describe('/posts',
                 })
         });
         //Проверяем pageSize = 1 | asc
-        it("should return 5 posts for createdBlog ", async () => {
+        it("should return 1 user for createdBlog ", async () => {
             await request(app)
                 .get(`${RouterPaths.blogs}/${encodeURIComponent(blogId)}${RouterPaths.posts}/?sortDirection=asc&pageSize=1`)
                 .expect(200, {
@@ -333,7 +333,7 @@ describe('/posts',
                 })
         });
         //Проверяем pageSize = 1 | desc
-        it("should return 5 posts for createdBlog ", async () => {
+        it("should return 1 posts for createdBlog ", async () => {
             await request(app)
                 .get(`${RouterPaths.blogs}/${encodeURIComponent(blogId)}${RouterPaths.posts}/?pageSize=1`)
                 .expect(200, {
@@ -346,7 +346,7 @@ describe('/posts',
         });
 
         //Проверяем pageSize = 1 и pageNumber 2 | desc
-        it("should return 5 posts for createdBlog ", async () => {
+        it("should return 1 posts for createdBlog ", async () => {
             await request(app)
                 .get(`${RouterPaths.blogs}/${encodeURIComponent(blogId)}${RouterPaths.posts}/?pageSize=1&pageNumber=2`)
                 .expect(200, {

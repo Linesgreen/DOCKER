@@ -1,6 +1,8 @@
 // noinspection FunctionWithInconsistentReturnsJS
 
 import {NextFunction, Request, Response} from "express";
+import {body} from "express-validator";
+import {inputModelValidation} from "../inputModel/input-model-Validation";
 
 const login = "admin";
 const password = "qwerty";
@@ -26,3 +28,9 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 
     return decodedLogin === login && decodedPassword === password ? next() : res.sendStatus(401)
 };
+
+export const loginOrEmailValidation = body('loginOrEmail')
+    .isString()
+    .withMessage('Incorrect loginOrEmail');
+
+export const authLoginValidation = () => [loginOrEmailValidation, inputModelValidation];

@@ -1,10 +1,9 @@
 export type FilterType = {
-    [key: string]: {
-        $regex: RegExp | string;
+    $or?: ({
+        $regex: string;
         $options: string;
-    } | {};
+    } | {})[];
 };
-
 export type SortType = {
     [key: string]: 1 | -1
 }

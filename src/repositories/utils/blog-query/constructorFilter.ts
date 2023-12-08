@@ -12,19 +12,19 @@ export class ConstructorFilter {
             }
         } : {}
     }
-    static filter_Find_EmailAndLoginTerm(email: string | null, login: string | null): FilterType {
-        let filter: FilterType = {};
+
+    static filter_Find_EmailORLoginTerm(email: string | null, login: string | null): FilterType {
+
+        // findOne({$or: [{email: logOrEmail}, {login: logOrEmail}]}
+        let filter: FilterType = {$or: []};
         if (email) {
-            filter['email'] = {
-                $regex: email,
-                $options: 'i'
-            };
+            filter['$or']?.push({email: {$regex: email, $options: 'i'}});
         }
         if (login) {
-            filter['login'] = {
-                $regex: login,
-                $options: 'i'
-            };
+            filter['$or']?.push({login: {$regex: login, $options: 'i'}});
+        }
+        if (filter['$or']?.length === 0) {
+            filter['$or']?.push({});
         }
         return filter;
     }

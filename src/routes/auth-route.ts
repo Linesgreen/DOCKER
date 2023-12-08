@@ -5,11 +5,12 @@ import {Router, Response} from "express";
 import {RequestWithBody} from "../types/common";
 import {ChekPass} from "../types/auth/input";
 import {UserService} from "../domain/user-service";
+import {authLoginValidation} from "../middlewares/auth/auth-middleware";
 
 export const authRoute = Router({});
 
 
-authRoute.post('/login', async (req: RequestWithBody<ChekPass>, res: Response) => {
+authRoute.post('/login', authLoginValidation(), async (req: RequestWithBody<ChekPass>, res: Response) => {
     const {loginOrEmail, password}: ChekPass = req.body;
     const result: boolean = await UserService.checkCredentials(loginOrEmail, password);
     result ? res.sendStatus(204) : res.sendStatus(401)
