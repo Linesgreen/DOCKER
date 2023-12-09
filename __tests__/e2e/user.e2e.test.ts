@@ -150,7 +150,7 @@ describe('/posts',
                     "items": [user5, user4, user3, user2, user1]
                 })
         });
-        //Проверяем наличие 5 постов в блоке с сортировкой asc
+        //Проверяем наличие 5 полльзователей в блоке с сортировкой asc
         it("should return 5 users for createdBlog ", async () => {
             await request(app)
                 .get(`${RouterPaths.users}/?sortDirection=asc`)

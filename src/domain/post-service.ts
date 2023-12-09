@@ -3,6 +3,9 @@ import {PostCreateModel, PostUpdateModel} from "../types/posts/input";
 import {OutputItemsBlogType} from "../types/blogs/output";
 import {PostRepository} from "../repositories/repositury/post-repository";
 import {BlogQueryRepository} from "../repositories/query repository/blog-query-repository";
+import {CommentCreateModel} from "../types/comment/input";
+import {CommentType} from "../types/comment/output";
+import {CommentRepository} from "../repositories/repositury/comment-repository";
 
 export class PostService {
     // Возвращает ID созданного поста
@@ -34,6 +37,21 @@ export class PostService {
     // Возарщает ✅true (пост найден и удален), ❌false (пост не найден)
     static async deletePostById(id: string): Promise<boolean> {
         return await PostRepository.deletePostById(id)
+    }
+
+    //
+    static async addCommentToPost(content: CommentCreateModel, postId: string) {
+        const newComment: CommentType = {
+            postId: postId,
+            content: content.content,
+            commentatorInfo: {
+                userId : 'any',
+                userLogin: 'any'
+            },
+            createdAt: new Date().toISOString()
+        };
+
+        return await CommentRepository.addComment(newComment)
     }
 }
 

@@ -5,6 +5,7 @@ import {deleteTestRoute} from "./routes/delete.test.route";
 import {indexRoute} from "./routes/index.route";
 import {authRoute} from "./routes/auth-route";
 import {usersRoute} from "./routes/users-route";
+import {commentRoute} from "./routes/comment-routes";
 
 export const app = express();
 
@@ -15,6 +16,7 @@ export const RouterPaths = {
     index: '/',
     auth: '/auth',
     users: '/users',
+    comments: '/comments'
 };
 
 
@@ -25,4 +27,5 @@ app.use(RouterPaths.__test__, deleteTestRoute);
 app.use(RouterPaths.index, indexRoute);
 app.use(RouterPaths.auth, authRoute);
 app.use(RouterPaths.users, usersRoute);
+app.use(RouterPaths.comments, commentRoute);
 
