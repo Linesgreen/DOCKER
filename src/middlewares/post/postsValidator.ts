@@ -1,6 +1,7 @@
 import {body} from "express-validator";
 import {blogIdValidationInBody,} from "../blog/blogsValidator";
 import {inputModelValidation} from "../inputModel/input-model-Validation";
+import {mongoIDValidation} from "../mongoIDValidation";
 
 export const titleValidation = body('title')
     .isString()
@@ -20,6 +21,17 @@ export const contentValidation = body('content')
     .isLength({min: 1, max: 1000})
     .withMessage('Incorrect content');
 
+export const commentContentValidation = body('content')
+    .isString()
+    .trim()
+    .isLength({min: 20, max: 300})
+    .withMessage('Incorrect content');
+
 export const postPostValidation = () => [titleValidation, shortDescriptionValidation, contentValidation, blogIdValidationInBody, inputModelValidation];
 export const postInBlogValidation = () => [titleValidation, shortDescriptionValidation, contentValidation, inputModelValidation];
-export const postPutValidation = () => [titleValidation, shortDescriptionValidation, contentValidation, blogIdValidationInBody, inputModelValidation];
+export const postPutValidation = () => [titleValidation, shortDescriptionValidation, contentValidation, mongoIDValidation, blogIdValidationInBody, inputModelValidation];
+
+export const addCommentToPost = () => [mongoIDValidation, commentContentValidation, inputModelValidation];
+export const getCommentFromPost = () => [mongoIDValidation, inputModelValidation];
+export const deletePostValidation = () => [mongoIDValidation, inputModelValidation];
+export const getPostIdValidation = () => [mongoIDValidation, inputModelValidation];

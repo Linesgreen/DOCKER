@@ -7,6 +7,8 @@ import {CommentCreateModel} from "../types/comment/input";
 import {CommentType} from "../types/comment/output";
 import {CommentRepository} from "../repositories/repositury/comment-repository";
 
+import {PostQueryRepository} from "../repositories/query repository/post-query-repository";
+
 export class PostService {
     // Возвращает ID созданного поста
     static async addPost(params: PostCreateModel): Promise<string> {
@@ -40,7 +42,11 @@ export class PostService {
     }
 
     //Добавляем коментарий к посту
-    static async addCommentToPost(content: CommentCreateModel, postId: string) {
+    static async addCommentToPost(content: CommentCreateModel, postId: string): Promise<string | null> {
+        const post = await PostQueryRepository.getPostById(postId);
+        if (!post) {
+            return null
+        }
         const newComment: CommentType = {
             postId: postId,
             content: content.content,

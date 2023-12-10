@@ -1,5 +1,6 @@
 import {body} from "express-validator";
 import {inputModelValidation} from "../inputModel/input-model-Validation";
+import {mongoIDValidation} from "../mongoIDValidation";
 
 export const loginValidation = body('login')
     .isString()
@@ -19,3 +20,4 @@ export const emailValidation = body('email')
     .withMessage('incorrect email');
 
 export const userPostValidation = () => [loginValidation, passwordValidation, emailValidation, inputModelValidation];
+export const userDeleteValidation = () => [mongoIDValidation, inputModelValidation];

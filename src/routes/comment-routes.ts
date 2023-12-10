@@ -7,6 +7,7 @@ import {CommentParams, CommentUpdateModel} from "../types/comment/input";
 import {WithId} from "mongodb";
 import {CommentType, OutputItemsCommentType} from "../types/comment/output";
 import {CommentService} from "../domain/comment-service";
+import {authMiddleware} from "../middlewares/auth/auth-middleware";
 
 export const commentRoute = Router({});
 
@@ -32,7 +33,7 @@ commentRoute.put('/:id', async (req: RequestWithBodyAndParams<CommentParams, Com
 });
 
 //Удаляем комментарий по коммент айд
-commentRoute.delete('/:id', async (req: RequestWithParams<CommentParams>, res) => {
+commentRoute.delete('/:id', authMiddleware, async (req: RequestWithParams<CommentParams>, res) => {
     const id: string = req.params.id;
     const deleteResult: boolean = await CommentService.deleteComment(id);
     deleteResult ? res.sendStatus(204) : res.sendStatus(404)

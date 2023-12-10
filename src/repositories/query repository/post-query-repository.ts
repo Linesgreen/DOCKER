@@ -41,16 +41,8 @@ export class PostQueryRepository {
 
     //Возвращает пост переработанный в мапере
     static async getPostById(id: string): Promise<OutputItemsPostType | null> {
-        try {
-            if (!isValidObjectId(id)) {
-                throw new Error('id no objectID!');
-            }
             const post: WithId<PostType> | null = await postCollection.findOne({_id: new ObjectId(id)});
             return post ? PostMapper(post) : null
-        } catch (error) {
-            console.log(error);
-            return null
-        }
     }
 
     // ⚠️Удаление всех постов для тестов

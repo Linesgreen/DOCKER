@@ -5,7 +5,12 @@ import {OutputPostType, PostType} from "../types/posts/output";
 import {RequestWithBody, RequestWithBodyAndParams, RequestWithParams, RequestWithQuery} from "../types/common";
 import {PostCreateModel, PostParams, PostSortData, PostUpdateModel,} from "../types/posts/input";
 import {authMiddleware} from "../middlewares/auth/auth-middleware";
-import {postPostValidation, postPutValidation} from "../middlewares/post/postsValidator";
+import {
+    addCommentToPost,
+    deletePostValidation, getCommentFromPost, getPostIdValidation,
+    postPostValidation,
+    postPutValidation
+} from "../middlewares/post/postsValidator";
 import {PostService} from "../domain/post-service";
 import {PostQueryRepository} from "../repositories/query repository/post-query-repository";
 import {UserParams} from "../types/users/input";
@@ -29,7 +34,7 @@ postRoute.get('/', async (req: RequestWithQuery<PostSortData>, res: Response<Out
 });
 
 //Получаем конкретный пост
-postRoute.get('/:id', async (req: RequestWithParams<PostParams>, res: Response<PostType>) => {
+postRoute.get('/:id', getPostIdValidation(), async (req: RequestWithParams<PostParams>, res: Response<PostType>) => {
     const id: string = req.params.id;
     const post: PostType | null = await PostQueryRepository.getPostById(id);
     post ? res.send(post) : res.sendStatus(404)
@@ -51,14 +56,14 @@ postRoute.put('/:id', authMiddleware, postPutValidation(), async (req: RequestWi
 });
 
 // Удаляем пост
-postRoute.delete('/:id', authMiddleware, async (req: RequestWithParams<UserParams>, res: Response) => {
+postRoute.delete('/:id', authMiddleware, deletePostValidation(), async (req: RequestWithParams<UserParams>, res: Response) => {
     const id: string = req.params.id;
     const deleteResult: boolean = await PostService.deletePostById(id);
     deleteResult ? res.sendStatus(204) : res.sendStatus(404)
 });
 
 // Cоздаем коментарий к посту
-postRoute.post('/:id/comments', async (req: RequestWithBodyAndParams<PostParams, CommentCreateModel>, res: Response) => {
+postRoute.post('/:id/comments', authMiddleware, addCommentToPost(), async (req: RequestWithBodyAndParams<PostParams, CommentCreateModel>, res: Response) => {
     const postId: string = req.params.id;
     const {content}: CommentCreateModel = req.body;
     const newCommentId = await PostService.addCommentToPost({content}, postId);
@@ -70,11 +75,10 @@ postRoute.post('/:id/comments', async (req: RequestWithBodyAndParams<PostParams,
 });
 
 // Получаем коментарии к посту
-postRoute.get('/:id/comments', async (req: RequestWithParams<PostParams>, res: Response) => {
+postRoute.get('/:id/comments', getCommentFromPost(), async (req: RequestWithParams<PostParams>, res: Response) => {
     const postId: string = req.params.id;
     const comments = await CommentQueryRepository.getCommentsByPostId(postId);
     res.status(200).send(comments)
-
 });
 
 
