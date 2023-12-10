@@ -8,7 +8,8 @@ import {UserQueryRepository} from "../repositories/query repository/user-query-r
 import {UserOutputType, UserWithPaginationOutputType} from "../types/users/output";
 import {authMiddleware} from "../middlewares/auth/auth-middleware";
 import {PostParams} from "../types/posts/input";
-import {userDeleteValidation, userPostValidation} from "../middlewares/user/userValidatior";
+import {userPostValidation} from "../middlewares/user/userValidatior";
+import {mongoIdAndErrorResult} from "../middlewares/mongoIDValidation";
 
 export const usersRoute = Router({});
 
@@ -37,7 +38,7 @@ usersRoute.post('/', authMiddleware, userPostValidation(), async (req: RequestWi
     res.status(201).send(newUser);
 });
 
-usersRoute.delete('/:id', authMiddleware, userDeleteValidation(), async (req: RequestWithParams<PostParams>, res: Response) => {
+usersRoute.delete('/:id', authMiddleware, mongoIdAndErrorResult(), async (req: RequestWithParams<PostParams>, res: Response) => {
     const id: string = req.params.id;
     const deleteResult: boolean = await UserService.deleteUserByID(id);
     deleteResult ? res.sendStatus(204) : res.sendStatus(404)

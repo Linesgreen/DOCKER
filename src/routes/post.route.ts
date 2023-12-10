@@ -7,7 +7,6 @@ import {PostCreateModel, PostParams, PostSortData, PostUpdateModel,} from "../ty
 import {authMiddleware} from "../middlewares/auth/auth-middleware";
 import {
     addCommentToPost,
-    deletePostValidation, getCommentFromPost, getPostIdValidation,
     postPostValidation,
     postPutValidation
 } from "../middlewares/post/postsValidator";
@@ -17,6 +16,7 @@ import {UserParams} from "../types/users/input";
 import {CommentCreateModel} from "../types/comment/input";
 
 import {CommentQueryRepository} from "../repositories/query repository/comment-query-repository";
+import {mongoIdAndErrorResult} from "../middlewares/mongoIDValidation";
 
 export const postRoute = Router({});
 
@@ -34,7 +34,7 @@ postRoute.get('/', async (req: RequestWithQuery<PostSortData>, res: Response<Out
 });
 
 //Получаем конкретный пост
-postRoute.get('/:id', getPostIdValidation(), async (req: RequestWithParams<PostParams>, res: Response<PostType>) => {
+postRoute.get('/:id', mongoIdAndErrorResult(), async (req: RequestWithParams<PostParams>, res: Response<PostType>) => {
     const id: string = req.params.id;
     const post: PostType | null = await PostQueryRepository.getPostById(id);
     post ? res.send(post) : res.sendStatus(404)
@@ -56,7 +56,7 @@ postRoute.put('/:id', authMiddleware, postPutValidation(), async (req: RequestWi
 });
 
 // Удаляем пост
-postRoute.delete('/:id', authMiddleware, deletePostValidation(), async (req: RequestWithParams<UserParams>, res: Response) => {
+postRoute.delete('/:id', authMiddleware, mongoIdAndErrorResult(), async (req: RequestWithParams<UserParams>, res: Response) => {
     const id: string = req.params.id;
     const deleteResult: boolean = await PostService.deletePostById(id);
     deleteResult ? res.sendStatus(204) : res.sendStatus(404)
@@ -75,7 +75,7 @@ postRoute.post('/:id/comments', authMiddleware, addCommentToPost(), async (req: 
 });
 
 // Получаем коментарии к посту
-postRoute.get('/:id/comments', getCommentFromPost(), async (req: RequestWithParams<PostParams>, res: Response) => {
+postRoute.get('/:id/comments', mongoIdAndErrorResult(), async (req: RequestWithParams<PostParams>, res: Response) => {
     const postId: string = req.params.id;
     const comments = await CommentQueryRepository.getCommentsByPostId(postId);
     res.status(200).send(comments)

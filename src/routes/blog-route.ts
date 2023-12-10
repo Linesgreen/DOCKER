@@ -28,6 +28,7 @@ import {PostSortData, PostToBlogCreateModel} from "../types/posts/input";
 import {PostQueryRepository} from "../repositories/query repository/post-query-repository";
 import {OutputItemsPostType, OutputPostType} from "../types/posts/output";
 import {postInBlogValidation} from "../middlewares/post/postsValidator";
+import {mongoIdAndErrorResult} from "../middlewares/mongoIDValidation";
 
 export const blogRoute = Router({});
 
@@ -45,7 +46,7 @@ blogRoute.get('/', async (req: RequestWithQuery<BlogSortData>, res: Response<Out
 });
 
 
-blogRoute.get('/:id/posts', blogIdInParamsMiddleware, async (req: RequestWithQueryAndParams<BlogParams, PostSortData>, res: Response<OutputPostType>) => {
+blogRoute.get('/:id/posts', blogIdInParamsMiddleware, mongoIdAndErrorResult(), async (req: RequestWithQueryAndParams<BlogParams, PostSortData>, res: Response<OutputPostType>) => {
     const blogId: string = req.params.id;
     const sortData: PostSortData = {
         sortBy: req.query.sortBy,
@@ -63,7 +64,7 @@ blogRoute.get('/:id/posts', blogIdInParamsMiddleware, async (req: RequestWithQue
 });
 
 
-blogRoute.get('/:id', blogIdInParamsMiddleware, async (req: RequestWithParams<BlogParams>, res: Response<OutputItemsBlogType>) => {
+blogRoute.get('/:id', blogIdInParamsMiddleware, mongoIdAndErrorResult(), async (req: RequestWithParams<BlogParams>, res: Response<OutputItemsBlogType>) => {
     const id: string = req.params.id;
     const blog: OutputItemsBlogType | null = await BlogQueryRepository.getBlogById(id);
     blog ? res.send(blog) : res.sendStatus(404)
@@ -96,7 +97,7 @@ blogRoute.put('/:id', authMiddleware, blogPutValidation(), async (req: RequestWi
     updateResult ? res.sendStatus(204) : res.sendStatus(404)
 });
 
-blogRoute.delete('/:id', authMiddleware, async (req: RequestWithParams<BlogParams>, res: Response) => {
+blogRoute.delete('/:id', authMiddleware, mongoIdAndErrorResult(), async (req: RequestWithParams<BlogParams>, res: Response) => {
     const id: string = req.params.id;
     const deleteResult: boolean = await BlogService.deleteBlogById(id);
     deleteResult ? res.sendStatus(204) : res.sendStatus(404)

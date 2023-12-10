@@ -28,10 +28,7 @@ export const commentContentValidation = body('content')
     .withMessage('Incorrect content');
 
 export const postPostValidation = () => [titleValidation, shortDescriptionValidation, contentValidation, blogIdValidationInBody, inputModelValidation];
-export const postInBlogValidation = () => [titleValidation, shortDescriptionValidation, contentValidation, inputModelValidation];
+export const postInBlogValidation = () => [titleValidation, shortDescriptionValidation, contentValidation, mongoIDValidation, inputModelValidation];
 export const postPutValidation = () => [titleValidation, shortDescriptionValidation, contentValidation, mongoIDValidation, blogIdValidationInBody, inputModelValidation];
 
 export const addCommentToPost = () => [mongoIDValidation, commentContentValidation, inputModelValidation];
-export const getCommentFromPost = () => [mongoIDValidation, inputModelValidation];
-export const deletePostValidation = () => [mongoIDValidation, inputModelValidation];
-export const getPostIdValidation = () => [mongoIDValidation, inputModelValidation];
