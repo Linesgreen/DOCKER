@@ -4,3 +4,8 @@ export type CommentParams = {
 export type CommentCreateModel = {
     content: string,
 }
+
+export type CommentUpdateModel = {
+    content: string
+}
+

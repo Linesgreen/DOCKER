@@ -1,7 +1,7 @@
-
 import {commentCollection} from "../../db/db";
-
 import {CommentType} from "../../types/comment/output";
+import {CommentUpdateModel} from "../../types/comment/input";
+import {ObjectId} from "mongodb";
 
 
 export class CommentRepository {
@@ -11,40 +11,20 @@ export class CommentRepository {
         const addResult = await commentCollection.insertOne(newComment);
         return addResult.insertedId.toString()
     }
-/*
-    //Возвращает ✅true (пост найден), ❌false (пост не найден)
-    static async updatePost(updateParams: PostUpdateModel, id: string): Promise<boolean> {
-        try {
 
-            if (!isValidObjectId(id)) {
-                throw new Error("id no objectID!");
+    // успех ✅true, не успех ❌false
+    static async updateComment(params: CommentUpdateModel, id: string) {
+        const updateResult = await commentCollection.updateOne({_id: new ObjectId(id)}, {
+            $set: {
+                content: params.content
             }
-
-            const updateResult = await postCollection.updateOne({_id: new ObjectId(id)}, {
-                $set: updateParams
-            });
-            return !!updateResult.matchedCount
-
-        } catch (error) {
-            console.log(error);
-            return false
-        }
-
+        });
+        return !!updateResult.matchedCount
     }
 
-    // Возарщает ✅true (пост найден и удален), ❌false (пост не найден)
-    static async deletePostById(id: string): Promise<boolean> {
-        try {
-            if (!isValidObjectId(id)) {
-                throw new Error("id no objectID!");
-            }
-            const deleteResult = await postCollection.deleteOne({_id: new ObjectId(id)});
-            return !!deleteResult.deletedCount
-        } catch (error) {
-            console.log(error);
-            return false
-        }
+    // успех ✅true, не успех ❌false
+    static async deleteComment(id: string) {
+        const deleteResult = await commentCollection.deleteOne({_id: new ObjectId(id)});
+        return !!deleteResult.deletedCount
     }
-
- */
 }

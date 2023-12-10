@@ -22,7 +22,7 @@ export class BlogService {
         return await BlogRepository.addBlog(newBlog);
     }
 
-    // Возвращает id созданного блога
+    // Создаем пост в блоге = Возвращает id созданного поста
     static async addPostToBlog(id: string, postData: PostToBlogCreateModel): Promise<string | null> {
         const blog: OutputItemsBlogType | null = await BlogQueryRepository.getBlogById(id);
         if (!blog) {
@@ -41,12 +41,12 @@ export class BlogService {
         return await PostRepository.addPost(newPost)
     }
 
-    // успех ✅true, не успех ❌false
+    // Обновляем блог =  успех ✅true, не успех ❌false
     static async updateBlog(params: BlogUpdateModel, id: string): Promise<boolean> {
         return await BlogRepository.updateBlog(params, id)
     }
 
-    // успех ✅true, не успех ❌false
+    //Удаляем блог =  успех ✅true, не успех ❌false
     static async deleteBlogById(id: string): Promise<boolean> {
         return await BlogRepository.deleteBlogById(id)
     }

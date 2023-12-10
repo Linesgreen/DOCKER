@@ -62,11 +62,19 @@ postRoute.post('/:id/comments', async (req: RequestWithBodyAndParams<PostParams,
     const postId: string = req.params.id;
     const {content}: CommentCreateModel = req.body;
     const newCommentId = await PostService.addCommentToPost({content}, postId);
-    if(!newCommentId) {
+    if (newCommentId) {
+        res.status(201).send(await CommentQueryRepository.getCommentById(newCommentId))
+    } else {
         res.sendStatus(404);
-        return
     }
-    res.status(201).send(await CommentQueryRepository.getCommentById(newCommentId))
+});
+
+// Получаем коментарии к посту
+postRoute.get('/:id/comments', async (req: RequestWithParams<PostParams>, res: Response) => {
+    const postId: string = req.params.id;
+    const comments = await CommentQueryRepository.getCommentsByPostId(postId);
+    res.status(200).send(comments)
+
 });
 
 

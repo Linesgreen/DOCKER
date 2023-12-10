@@ -19,6 +19,7 @@ export class CommentQueryRepository {
         return comments
     }
 
+    // Получаем коментарий по коммент айд
     static async getCommentById(id: string) : Promise<OutputItemsCommentType | null> {
         try {
             if (!isValidObjectId(id)) {
@@ -32,5 +33,12 @@ export class CommentQueryRepository {
         }
     }
 
+
+    // Получаем коментарии по пост айди
+    static async getCommentsByPostId(id: string): Promise<OutputItemsCommentType[] | null> {
+        const comments: WithId<CommentType>[] | null = await commentCollection.find({postId: id}).toArray();
+        return comments ? comments.map(CommentMapper) : null
+
+    }
 
 }

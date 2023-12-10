@@ -39,13 +39,13 @@ export class PostService {
         return await PostRepository.deletePostById(id)
     }
 
-    //
+    //Добавляем коментарий к посту
     static async addCommentToPost(content: CommentCreateModel, postId: string) {
         const newComment: CommentType = {
             postId: postId,
             content: content.content,
             commentatorInfo: {
-                userId : 'any',
+                userId: 'any',
                 userLogin: 'any'
             },
             createdAt: new Date().toISOString()
