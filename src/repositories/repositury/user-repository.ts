@@ -4,6 +4,7 @@ import {ObjectId, WithId} from "mongodb";
 
 // noinspection UnnecessaryLocalVariableJS
 export class UserRepository {
+    //Возвращает id созданного пользователя
     static async addUser(newUser: UserDBType) : Promise<string>{
         const result = await userCollection.insertOne(newUser);
         return result.insertedId.toString()

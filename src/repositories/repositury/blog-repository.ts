@@ -5,13 +5,22 @@ import {ObjectId} from "mongodb";
 
 
 export class BlogRepository {
-    // Возвращает id созданного блога
+    /**
+     * Возвращает id созданного блога
+     * @param newBlog - новый блог
+     * @returns id созданного блога
+     */
     static async addBlog(newBlog: BlogType): Promise<string> {
         const result = await blogCollection.insertOne(newBlog);
         return result.insertedId.toString()
     }
 
-    // успех ✅true, не успех ❌false
+    /**
+     * Обновляет блог
+     * @param params - параметры для обновления блога
+     * @param id - id блога
+     * @returns ✅true, если обновление прошло успешно, иначе ❌false
+     */
     static async updateBlog(params: BlogUpdateModel, id: string): Promise<boolean> {
         const updateResult = await blogCollection.updateOne({_id: new ObjectId(id)}, {
             $set: {
@@ -23,7 +32,11 @@ export class BlogRepository {
         return !!updateResult.matchedCount
     }
 
-    // успех ✅true, не успех ❌false
+    /**
+     * Удаляет блог по id
+     * @param id - id блога
+     * @returns ✅true, если удаление прошло успешно, иначе ❌false
+     */
     static async deleteBlogById(id: string): Promise<boolean> {
 
         const deleteResult = await blogCollection.deleteOne({_id: new ObjectId(id)});
