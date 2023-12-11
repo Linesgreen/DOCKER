@@ -16,6 +16,7 @@ export const authBearerMiddleware = async (req: Request, res: Response, next: Ne
         return
     }
     const userId = await jwtService.getUserIdByToken(token);
+    console.log(userId);
     if (!userId) {
         console.log('Токен не прошел');
         res.send(401);

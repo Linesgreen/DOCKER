@@ -17,6 +17,7 @@ import {CommentCreateModel} from "../types/comment/input";
 
 import {CommentQueryRepository} from "../repositories/query repository/comment-query-repository";
 import {mongoIdAndErrorResult} from "../middlewares/mongoIDValidation";
+import {authBearerMiddleware} from "../middlewares/auth/auth-bearer-niddleware";
 
 export const postRoute = Router({});
 
@@ -63,10 +64,11 @@ postRoute.delete('/:id', authMiddleware, mongoIdAndErrorResult(), async (req: Re
 });
 
 // Cоздаем коментарий к посту
-postRoute.post('/:id/comments', authMiddleware, addCommentToPost(), async (req: RequestWithBodyAndParams<PostParams, CommentCreateModel>, res: Response) => {
+postRoute.post('/:id/comments', authBearerMiddleware, addCommentToPost(), async (req: RequestWithBodyAndParams<PostParams, CommentCreateModel>, res: Response) => {
+    const {id: userId, login: userLogin} = req.user!;
     const postId: string = req.params.id;
-    const {content}: CommentCreateModel = req.body;
-    const newCommentId = await PostService.addCommentToPost({content}, postId);
+    const content: CommentCreateModel = req.body;
+    const newCommentId = await PostService.addCommentToPost({userId, userLogin}, postId, content);
     if (newCommentId) {
         res.status(201).send(await CommentQueryRepository.getCommentById(newCommentId))
     } else {

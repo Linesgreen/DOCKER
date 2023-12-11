@@ -42,7 +42,7 @@ export class PostService {
     }
 
     //Добавляем коментарий к посту
-    static async addCommentToPost(content: CommentCreateModel, postId: string): Promise<string | null> {
+    static async addCommentToPost(userInfo: { userId: string, userLogin: string }, postId: string, content: CommentCreateModel): Promise<string | null> {
         const post = await PostQueryRepository.getPostById(postId);
         if (!post) {
             return null
@@ -51,8 +51,8 @@ export class PostService {
             postId: postId,
             content: content.content,
             commentatorInfo: {
-                userId: 'any',
-                userLogin: 'any'
+                userId: userInfo.userId,
+                userLogin: userInfo.userLogin
             },
             createdAt: new Date().toISOString()
         };
