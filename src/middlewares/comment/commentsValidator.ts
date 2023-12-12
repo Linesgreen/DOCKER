@@ -6,6 +6,7 @@ import {CommentQueryRepository} from "../../repositories/query repository/commen
 
 
 export const commentOwnerMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+
     const {id: userId,login: userLogin} = req.user!;
     const commentId: string = req.params.id;
     const comment: OutputItemsCommentType | null = await CommentQueryRepository.getCommentById(commentId);

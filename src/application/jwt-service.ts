@@ -19,7 +19,7 @@ export const jwtService = {
             const result: any = jwt.verify(token, secretWord);
             return result.userId
         } catch (error) {
-            console.log(error);
+            console.log(`Токен не расшифрован, дапдап`);
             return null
         }
     },

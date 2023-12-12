@@ -9,3 +9,9 @@ export type CommentUpdateModel = {
     content: string
 }
 
+export type CommentsSortData = {
+    sortBy?: string
+    sortDirection?: 'asc' | 'desc'
+    pageNumber?: string
+    pageSize?: string
+}

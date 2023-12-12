@@ -64,7 +64,7 @@ blogRoute.get('/:id/posts', blogIdInParamsMiddleware, mongoIdAndErrorResult(), a
 });
 
 
-blogRoute.get('/:id', blogIdInParamsMiddleware, mongoIdAndErrorResult(), async (req: RequestWithParams<BlogParams>, res: Response<OutputItemsBlogType>) => {
+blogRoute.get('/:id', mongoIdAndErrorResult(), blogIdInParamsMiddleware, async (req: RequestWithParams<BlogParams>, res: Response<OutputItemsBlogType>) => {
     const id: string = req.params.id;
     const blog: OutputItemsBlogType | null = await BlogQueryRepository.getBlogById(id);
     blog ? res.send(blog) : res.sendStatus(404)

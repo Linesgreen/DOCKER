@@ -46,6 +46,6 @@ export const blogIdInParamsMiddleware = async (req: Request, res: Response, next
 };
 
 
-export const blogPostValidation = () => [websiteUrlValidation, descriptionValidation, nameValidation, mongoIDValidation, inputModelValidation];
+export const blogPostValidation = () => [websiteUrlValidation, descriptionValidation, nameValidation, inputModelValidation];
 
 export const blogPutValidation = () => [websiteUrlValidation, descriptionValidation, nameValidation, mongoIDValidation, inputModelValidation];

@@ -21,7 +21,9 @@ authRoute.post('/login', authLoginValidation(), async (req: RequestWithBody<Chek
     const user: WithId<UserDBType> | null = await UserService.checkCredentials(loginOrEmail, password);
     if (user) {
         const token = await jwtService.createJWT(user);
-        res.status(201).send(token);
+        res.status(200).send({
+            accessToken: token
+        });
         return
     }
     res.sendStatus(401)

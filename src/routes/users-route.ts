@@ -13,6 +13,7 @@ import {mongoIdAndErrorResult} from "../middlewares/mongoIDValidation";
 
 export const usersRoute = Router({});
 
+
 usersRoute.get('/', authMiddleware, async (req: RequestWithQuery<UserSortData>, res: Response) => {
     const sortData: UserSortData = {
         searchEmailTerm: req.query.searchEmailTerm,
@@ -33,6 +34,7 @@ usersRoute.post('/', authMiddleware, userPostValidation(), async (req: RequestWi
         password: req.body.password,
         email: req.body.email
     };
+    console.log(`${userData.login} + ${userData.password}`);
     const newUserId: string = await UserService.addUser(userData);
     const newUser: UserOutputType | null = await UserQueryRepository.getUserById(newUserId);
     res.status(201).send(newUser);

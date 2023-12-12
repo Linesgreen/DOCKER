@@ -1,3 +1,5 @@
+import {OutputItemsPostType} from "../posts/output";
+
 export type CommentType = {
     postId: string
     content: string
@@ -16,5 +18,13 @@ export type OutputItemsCommentType = {
         userLogin: string
     },
     createdAt: string
+}
+
+export type OutputCommentType = {
+    pagesCount: number
+    page: number
+    pageSize: number
+    totalCount: number
+    items: OutputItemsCommentType[]
 }
 

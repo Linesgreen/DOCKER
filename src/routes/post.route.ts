@@ -2,7 +2,13 @@
 
 import {Router, Response} from "express";
 import {OutputPostType, PostType} from "../types/posts/output";
-import {RequestWithBody, RequestWithBodyAndParams, RequestWithParams, RequestWithQuery} from "../types/common";
+import {
+    RequestWithBody,
+    RequestWithBodyAndParams,
+    RequestWithParams,
+    RequestWithQuery,
+    RequestWithQueryAndParams
+} from "../types/common";
 import {PostCreateModel, PostParams, PostSortData, PostUpdateModel,} from "../types/posts/input";
 import {authMiddleware} from "../middlewares/auth/auth-middleware";
 import {
@@ -13,7 +19,7 @@ import {
 import {PostService} from "../domain/post-service";
 import {PostQueryRepository} from "../repositories/query repository/post-query-repository";
 import {UserParams} from "../types/users/input";
-import {CommentCreateModel} from "../types/comment/input";
+import {CommentCreateModel, CommentParams, CommentsSortData} from "../types/comment/input";
 
 import {CommentQueryRepository} from "../repositories/query repository/comment-query-repository";
 import {mongoIdAndErrorResult} from "../middlewares/mongoIDValidation";
@@ -75,12 +81,20 @@ postRoute.post('/:id/comments', authBearerMiddleware, addCommentToPost(), async 
         res.sendStatus(404);
     }
 });
-
 // Получаем коментарии к посту
-postRoute.get('/:id/comments', mongoIdAndErrorResult(), async (req: RequestWithParams<PostParams>, res: Response) => {
+postRoute.get('/:id/comments', mongoIdAndErrorResult(), async (req: RequestWithQueryAndParams<PostParams, CommentsSortData>, res: Response) => {
+    const sortData: CommentsSortData = {
+        sortBy: req.query.sortBy,
+        sortDirection: req.query.sortDirection,
+        pageNumber: req.query.pageNumber,
+        pageSize: req.query.pageSize
+    };
     const postId: string = req.params.id;
-    const comments = await CommentQueryRepository.getCommentsByPostId(postId);
+    const comments = await CommentQueryRepository.getCommentsByPostId(postId, sortData);
     res.status(200).send(comments)
 });
+
+
+
 
 
