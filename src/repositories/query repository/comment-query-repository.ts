@@ -1,14 +1,14 @@
 
 import {ObjectId, WithId} from "mongodb";
-import {commentCollection, postCollection} from "../../db/db";
+import {commentCollection} from "../../db/db";
 import {CommentType, OutputCommentType, OutputItemsCommentType} from "../../types/comment/output";
 import {CommentMapper} from "../../types/comment/commentMapper";
 import {CommentsSortData} from "../../types/comment/input";
-import {ConvertedPostSortData} from "../../types/posts/query";
+
 import {ConvertedCommentSortData} from "../../types/comment/query";
-import {FilterType, SortType} from "../../types/Mongo/params";
+import {SortType} from "../../types/Mongo/params";
 import {ConstructorFilter} from "../utils/blog-query/constructorFilter";
-import {PostMapper} from "../../types/posts/PostMapper";
+
 
 
 // noinspection UnnecessaryLocalVariableJS
@@ -51,7 +51,7 @@ export class CommentQueryRepository {
             .toArray();
         const totalCount: number = await commentCollection.countDocuments(findFilter);
         const pageCount: number = Math.ceil(totalCount / +formattedSortData.pageSize);
-        if (comments) {
+        if (totalCount >= 1) {
             return {
                 pagesCount: pageCount,
                 page: +formattedSortData.pageNumber,

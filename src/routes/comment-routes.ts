@@ -24,23 +24,19 @@ commentRoute.get('/', async (req: Request, res: Response) => {
 commentRoute.get('/:id', mongoIdAndErrorResult(), async (req: RequestWithParams<CommentParams>, res: Response) => {
     const id: string = req.params.id;
     const comments: OutputItemsCommentType | null = await CommentQueryRepository.getCommentById(id);
-    if (comments === null) {
-        res.sendStatus(403)
-    }
-    comments ? res.send(comments) : res.sendStatus(404)
+    comments === null ? res.sendStatus(404) : res.send(comments)
 });
 
-//Обновляем комментарий по коммент айди
-commentRoute.put('/:id', authBearerMiddleware,commentOwnerMiddleware, addCommentToPost(), async (req: RequestWithBodyAndParams<CommentParams, CommentUpdateModel>, res: Response) => {
+//Обновляем комментарий по коммент айди //Поменять местами commentOwnerMiddleware, addCommentToPost()
+commentRoute.put('/:id', authBearerMiddleware, addCommentToPost(), commentOwnerMiddleware, async (req: RequestWithBodyAndParams<CommentParams, CommentUpdateModel>, res: Response) => {
     const commentId: string = req.params.id;
     const content: CommentUpdateModel = req.body;
     const updateResult: boolean | null = await CommentService.updateComment(commentId, content);
-
-    updateResult ? res.sendStatus(204) : res.sendStatus(403)
+    updateResult ? res.sendStatus(204) : res.sendStatus(404)
 });
 
 //Удаляем комментарий по коммент айд
-commentRoute.delete('/:id', authBearerMiddleware, commentOwnerMiddleware, mongoIdAndErrorResult(), async (req: RequestWithParams<CommentParams>, res: Response) => {
+commentRoute.delete('/:id', authBearerMiddleware, mongoIdAndErrorResult(), commentOwnerMiddleware, async (req: RequestWithParams<CommentParams>, res: Response) => {
     const commentId: string = req.params.id;
     const deleteResult: boolean = await CommentService.deleteComment(commentId);
     deleteResult ? res.sendStatus(204) : res.sendStatus(404)

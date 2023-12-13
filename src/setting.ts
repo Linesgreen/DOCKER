@@ -7,7 +7,11 @@ import {authRoute} from "./routes/auth-route";
 import {usersRoute} from "./routes/users-route";
 import {commentRoute} from "./routes/comment-routes";
 
+import morganBody from 'morgan-body';
+import bodyParser from 'body-parser';
+
 export const app = express();
+
 
 export const RouterPaths = {
     blogs: '/blogs',
@@ -20,7 +24,9 @@ export const RouterPaths = {
 };
 
 
-app.use(express.json());
+app.use(bodyParser.json());
+morganBody(app);
+
 app.use(RouterPaths.posts, postRoute);
 app.use(RouterPaths.blogs, blogRoute);
 app.use(RouterPaths.__test__, deleteTestRoute);

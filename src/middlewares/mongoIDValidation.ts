@@ -4,6 +4,6 @@ import {inputModelValidation} from "./inputModel/input-model-Validation";
 
 
 
-export const mongoIDValidation = param('id').isMongoId().withMessage('id NOT mongoID');
+export const mongoIDValidation = param('id').isString().isMongoId().withMessage('id NOT mongoID');
 
 export const mongoIdAndErrorResult = () => [mongoIDValidation, inputModelValidation];

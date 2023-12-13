@@ -19,12 +19,10 @@ import {
 import {PostService} from "../domain/post-service";
 import {PostQueryRepository} from "../repositories/query repository/post-query-repository";
 import {UserParams} from "../types/users/input";
-import {CommentCreateModel, CommentParams, CommentsSortData} from "../types/comment/input";
-
+import {CommentCreateModel, CommentsSortData} from "../types/comment/input";
 import {CommentQueryRepository} from "../repositories/query repository/comment-query-repository";
 import {mongoIdAndErrorResult} from "../middlewares/mongoIDValidation";
 import {authBearerMiddleware} from "../middlewares/auth/auth-bearer-niddleware";
-
 export const postRoute = Router({});
 
 
@@ -91,7 +89,8 @@ postRoute.get('/:id/comments', mongoIdAndErrorResult(), async (req: RequestWithQ
     };
     const postId: string = req.params.id;
     const comments = await CommentQueryRepository.getCommentsByPostId(postId, sortData);
-    res.status(200).send(comments)
+    return comments ? res.status(200).send(comments) : res.sendStatus(404)
+
 });
 
 
