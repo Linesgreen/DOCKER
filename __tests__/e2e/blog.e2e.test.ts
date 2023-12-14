@@ -34,7 +34,7 @@ describe('/blogs', () => {
     //Переменные для хранения данных созданных видео
     let createdBlog: OutputItemsBlogType;
     let secondCreatedBlog: OutputItemsBlogType;
-    // базвая пагинация
+
 
     const blogData: BlogCreateModel = {
         "name": "Felix",
@@ -268,7 +268,7 @@ describe('/blogs', () => {
             .post(`${RouterPaths.blogs}/${encodeURIComponent(123)}${RouterPaths.posts}`)
             .auth('admin', 'qwerty')
             .send(postData)
-            .expect(404, 'Not Found')
+            .expect(400, {"errorsMessages":[{"message":"id NOT mongoID","field":"id"}]})
     });
 
     ///////////////////////////////////
