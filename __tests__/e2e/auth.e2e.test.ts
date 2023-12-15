@@ -4,6 +4,7 @@ import {app, RouterPaths} from "../../src/setting";
 import request from 'supertest'
 import {UserCreateModel} from "../../src/types/users/input";
 import {usersTestManager} from "../utils/usersTestManager";
+import {UserOutputType} from "../../src/types/users/output";
 
 
 describe('/auth', () => {
@@ -24,16 +25,16 @@ describe('/auth', () => {
         login: 'admin',
         password: 'qwerty'
     };
-    /*
+
+
     //Данные созданного пользователя
     let user1: UserOutputType;
 
-     */
 
     //Cоздаем пользователя
     it("should create user with correct input data ", async () => {
         const createResponse = await usersTestManager.createUser(userData, basicAuth, 201);
-        /*    user1 = createResponse.body;  */
+        user1 = createResponse.body;
     });
     //Пытаемся залогинится с неправильным паролем
     it("should dont loggin with incorrect pass ", async () => {
@@ -87,6 +88,7 @@ describe('/auth', () => {
                 )
             })
     });
+    let token: string;
     //Логинимся по мылу
     it("should  login with correct email ", async () => {
         await request(app)
@@ -97,10 +99,32 @@ describe('/auth', () => {
             })
             .expect(200)
             .then(response => {
+                token = response.body.accessToken;
                 expect(response.body.accessToken).toMatch(
                     /^([a-zA-Z0-9\-_=]+)\.([a-zA-Z0-9\-_=]+)\.([a-zA-Z0-9\-_=]+)$/
                 )
             })
+    });
+    //Получаем информацию о пользователе
+    it("should  login with correct email ", async () => {
+        await request(app)
+            .get(`${RouterPaths.auth}/me`)
+            .set('Authorization', `Bearer ${token}`)
+            .expect(200, {
+                "email": userData.email,
+                "login": userData.login,
+                "userId": user1.id
+            })
+
+    });
+    //Пытаемся получить информацию с некоректным токеном
+    it("should  login with correct email ", async () => {
+        await request(app)
+            .get(`${RouterPaths.auth}/me`)
+            .set('Authorization', `Bearer tGzv3JOkF0XG5Qx2TlKWIA`)
+            .expect(401)
+
     })
+
 
 });

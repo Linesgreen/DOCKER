@@ -22,10 +22,9 @@ export const RouterPaths = {
     users: '/users',
     comments: '/comments'
 };
-
-
 app.use(bodyParser.json());
 morganBody(app);
+
 
 app.use(RouterPaths.posts, postRoute);
 app.use(RouterPaths.blogs, blogRoute);
@@ -34,4 +33,5 @@ app.use(RouterPaths.index, indexRoute);
 app.use(RouterPaths.auth, authRoute);
 app.use(RouterPaths.users, usersRoute);
 app.use(RouterPaths.comments, commentRoute);
+
 

@@ -18,16 +18,13 @@ export const authBearerMiddleware = async (req: Request, res: Response, next: Ne
 
     }
     const userId = await jwtService.getUserIdByToken(token);
-    console.log(userId);
     if (!ObjectId.isValid(userId)) {
-        console.log('Токен не прошел');
         return res.sendStatus(401);
 
     }
     const user : UserOutputType | null = await UserQueryRepository.getUserById(userId);
     if(user) {
         req.user = user;
-        console.log('user найден');
         return next()
     } else {
         return res.sendStatus(404)

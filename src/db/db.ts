@@ -7,7 +7,6 @@ import {UserDBType} from "../types/users/output";
 import {CommentType} from "../types/comment/output";
 
 const mongoUri: string = process.env.MONGO_URL || 'mongodb://0.0.0.0:27017';
-console.log(process.env.MONGO_URL);
 
 
 const client = new MongoClient(mongoUri);

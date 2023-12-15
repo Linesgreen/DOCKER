@@ -4,8 +4,6 @@ import {NextFunction, Request, Response} from "express";
 import {validationResult} from "express-validator";
 
 export const inputModelValidation = (req: Request, res: Response, next: NextFunction) => {
-    console.log("Запущен inputModelValidation");
-    console.log("---------------------------------------");
     const errors = validationResult(req).formatWith(error => {
         switch (error.type) {
             case 'field' :

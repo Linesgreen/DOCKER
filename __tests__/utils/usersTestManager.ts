@@ -12,5 +12,17 @@ export const usersTestManager = {
             .send(userData)
             .expect(status);
         return response;
+    },
+
+    //Возвращает токен
+    async getToken(authData: {loginOrEmail: string, password: string }) {
+        const response = (await request(app)
+            .post(`${RouterPaths.auth}/login`)
+            .send({
+                loginOrEmail: authData.loginOrEmail,
+                password: authData.password
+            })
+            .expect(200));
+        return response.body.accessToken
     }
 };

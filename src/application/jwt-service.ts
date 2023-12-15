@@ -10,7 +10,6 @@ const secretWord = process.env.JWT_SECRET || 'BLABLABLA';
 export const jwtService = {
 
     async createJWT(user: WithId<UserDBType>) {
-        console.log(`секретное слово = ${secretWord} = тока никому не говори!`);
         const token: string = jwt.sign({userId: user._id}, secretWord, {expiresIn: '1h'});
         return token;
     },
@@ -19,7 +18,6 @@ export const jwtService = {
             const result: any = jwt.verify(token, secretWord);
             return result.userId
         } catch (error) {
-            console.log(`Токен не расшифрован, дапдап`);
             return null
         }
     },

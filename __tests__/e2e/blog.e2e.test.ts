@@ -31,7 +31,7 @@ describe('/blogs', () => {
             .expect(200, basicPag)
     });
 
-    //Переменные для хранения данных созданных видео
+    //Переменные для хранения данных созданных блогов
     let createdBlog: OutputItemsBlogType;
     let secondCreatedBlog: OutputItemsBlogType;
 
@@ -165,7 +165,7 @@ describe('/blogs', () => {
             .send(blogData)
             .expect(204);
 
-        // Проверяем что первый блог изменился
+        // Проверяем что первый блог изменилсяЗФ
         await request(app)
             .get(`${RouterPaths.blogs}/${encodeURIComponent(createdBlog.id)}`)
             .expect(200, {
