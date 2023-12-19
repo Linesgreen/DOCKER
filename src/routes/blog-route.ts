@@ -22,7 +22,7 @@ import {
     blogPutValidation,
 } from "../middlewares/blog/blogsValidator";
 import {OutputItemsBlogType, OutputBlogType} from "../types/blogs/output";
-import {BlogService} from "../domain/blog-service";
+import {BlogService} from "../domain/blog.service";
 import {BlogQueryRepository} from "../repositories/query repository/blog-query-repository";
 import {PostSortData, PostToBlogCreateModel} from "../types/posts/input";
 import {PostQueryRepository} from "../repositories/query repository/post-query-repository";

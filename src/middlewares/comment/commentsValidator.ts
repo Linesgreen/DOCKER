@@ -14,7 +14,6 @@ export const commentOwnerMiddleware = async (req: Request, res: Response, next: 
     if (!comment) {
         res.sendStatus(404);
         return
-
     }
     if (comment.commentatorInfo.userId !== userId && comment.commentatorInfo.userLogin !== userLogin) {
         res.sendStatus(403);

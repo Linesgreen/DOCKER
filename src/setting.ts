@@ -8,6 +8,7 @@ import {usersRoute} from "./routes/users-route";
 import {commentRoute} from "./routes/comment-routes";
 import morganBody from 'morgan-body';
 import bodyParser from 'body-parser';
+import {emailRouter} from "./routes/email-router";
 
 export const app = express();
 
@@ -24,6 +25,7 @@ export const RouterPaths = {
 
 
 morganBody(app);
+
 app.use(bodyParser.json());
 app.use(RouterPaths.posts, postRoute);
 app.use(RouterPaths.blogs, blogRoute);
@@ -32,5 +34,6 @@ app.use(RouterPaths.index, indexRoute);
 app.use(RouterPaths.auth, authRoute);
 app.use(RouterPaths.users, usersRoute);
 app.use(RouterPaths.comments, commentRoute);
+app.use('/email', emailRouter);
 
 

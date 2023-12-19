@@ -2,7 +2,7 @@ import {CommentUpdateModel} from "../types/comment/input";
 import {CommentRepository} from "../repositories/repositury/comment-repository";
 
 
-export class CommentService {
+export class CommenService {
     // Обновляем комментарий =  успех ✅true, не тот логин или пароль ❌false, нет такого поста 0️⃣null
     static async updateComment(commentId: string, content: CommentUpdateModel) {
         return await CommentRepository.updateComment(content, commentId)

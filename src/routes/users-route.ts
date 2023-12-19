@@ -1,7 +1,7 @@
 // noinspection MagicNumberJS,AnonymousFunctionJS
 
 import {Router, Response} from "express";
-import {UserService} from "../domain/user-service";
+import {UserService} from "../domain/user.service";
 import {RequestWithBody, RequestWithParams, RequestWithQuery} from "../types/common";
 import {UserCreateModel, UserSortData} from "../types/users/input";
 import {UserQueryRepository} from "../repositories/query repository/user-query-repository";
@@ -14,7 +14,7 @@ import {mongoIdAndErrorResult} from "../middlewares/mongoIDValidation";
 export const usersRoute = Router({});
 
 
-usersRoute.get('/', authMiddleware, async (req: RequestWithQuery<UserSortData>, res: Response) => {
+usersRoute.get('/', authMiddleware, async (req: RequestWithQuery<UserSortData>, res: Response<UserWithPaginationOutputType>) => {
     const sortData: UserSortData = {
         searchEmailTerm: req.query.searchEmailTerm,
         searchLoginTerm: req.query.searchLoginTerm,
@@ -28,7 +28,7 @@ usersRoute.get('/', authMiddleware, async (req: RequestWithQuery<UserSortData>, 
 });
 
 
-usersRoute.post('/', authMiddleware, userPostValidation(), async (req: RequestWithBody<UserCreateModel>, res: Response<UserOutputType | null>) => {
+usersRoute.post('/', authMiddleware, userPostValidation(), async (req: RequestWithBody<UserCreateModel>, res: Response<UserOutputType>) => {
     const userData: UserCreateModel = {
         login: req.body.login,
         password: req.body.password,
@@ -36,7 +36,7 @@ usersRoute.post('/', authMiddleware, userPostValidation(), async (req: RequestWi
     };
     const newUserId: string = await UserService.addUser(userData);
     const newUser: UserOutputType | null = await UserQueryRepository.getUserById(newUserId);
-    res.status(201).send(newUser);
+    res.status(201).send(newUser!);
 });
 
 usersRoute.delete('/:id', authMiddleware, mongoIdAndErrorResult(), async (req: RequestWithParams<PostParams>, res: Response) => {

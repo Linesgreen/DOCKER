@@ -6,7 +6,7 @@ import {RequestWithBodyAndParams, RequestWithParams} from "../types/common";
 import {CommentParams, CommentUpdateModel} from "../types/comment/input";
 import {WithId} from "mongodb";
 import {CommentType, OutputItemsCommentType} from "../types/comment/output";
-import {CommentService} from "../domain/comment-service";
+import {CommenService} from "../domain/commen.service";
 import {mongoIdAndErrorResult} from "../middlewares/mongoIDValidation";
 import {addCommentToPost} from "../middlewares/post/postsValidator";
 import {authBearerMiddleware} from "../middlewares/auth/auth-bearer-niddleware";
@@ -21,7 +21,7 @@ commentRoute.get('/', async (req: Request, res: Response) => {
 });
 
 // Получаем комментарий по айди
-commentRoute.get('/:id', mongoIdAndErrorResult(), async (req: RequestWithParams<CommentParams>, res: Response) => {
+commentRoute.get('/:id', mongoIdAndErrorResult(), async (req: RequestWithParams<CommentParams>, res: Response<OutputItemsCommentType>) => {
     const id: string = req.params.id;
     const comments: OutputItemsCommentType | null = await CommentQueryRepository.getCommentById(id);
     comments === null ? res.sendStatus(404) : res.send(comments)
@@ -31,13 +31,13 @@ commentRoute.get('/:id', mongoIdAndErrorResult(), async (req: RequestWithParams<
 commentRoute.put('/:id', authBearerMiddleware, addCommentToPost(), commentOwnerMiddleware, async (req: RequestWithBodyAndParams<CommentParams, CommentUpdateModel>, res: Response) => {
     const commentId: string = req.params.id;
     const content: CommentUpdateModel = req.body;
-    const updateResult: boolean | null = await CommentService.updateComment(commentId, content);
+    const updateResult: boolean | null = await CommenService.updateComment(commentId, content);
     updateResult ? res.sendStatus(204) : res.sendStatus(404)
 });
 
 //Удаляем комментарий по коммент айд
 commentRoute.delete('/:id', authBearerMiddleware, mongoIdAndErrorResult(), commentOwnerMiddleware, async (req: RequestWithParams<CommentParams>, res: Response) => {
     const commentId: string = req.params.id;
-    const deleteResult: boolean = await CommentService.deleteComment(commentId);
+    const deleteResult: boolean = await CommenService.deleteComment(commentId);
     deleteResult ? res.sendStatus(204) : res.sendStatus(404)
 });

@@ -1,8 +1,20 @@
+// noinspection JSClassNamingConvention
+import {ObjectId} from "mongodb";
+
 export type UserDBType = {
-    "login": string
-    "email": string
-    "password": string
-    "createdAt": string
+    _id: ObjectId
+    accountData: {
+        "userName": string
+        "email": string
+        "passwordHash": string
+        "createdAt": string
+    }
+    emailConfirmation: {
+        confirmationCode: string
+        expirationDate: Date
+        isConfirmed: boolean
+    }
+
 }
 
 export type UserOutputType = {
@@ -20,5 +32,7 @@ export type UserWithPaginationOutputType = {
     totalCount: number
     items: UserOutputType[]
 }
+
+
 
 

@@ -22,7 +22,7 @@ export const authBearerMiddleware = async (req: Request, res: Response, next: Ne
         return res.sendStatus(401);
 
     }
-    const user : UserOutputType | null = await UserQueryRepository.getUserById(userId);
+    const user: UserOutputType | null = await UserQueryRepository.getUserById(userId);
     if(user) {
         req.user = user;
         return next()

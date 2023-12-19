@@ -1,4 +1,4 @@
-import {OutputItemsPostType} from "../posts/output";
+
 
 export type CommentType = {
     postId: string

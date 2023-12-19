@@ -5,13 +5,19 @@ import {ObjectId, WithId} from "mongodb";
 // noinspection UnnecessaryLocalVariableJS
 export class UserRepository {
     //Возвращает id созданного пользователя
-    static async addUser(newUser: UserDBType) : Promise<string>{
+    static async addUser(newUser: UserDBType): Promise<string>{
         const result = await userCollection.insertOne(newUser);
         return result.insertedId.toString()
     }
 
-    static async getByLoginOrEmail(logOrEmail: string): Promise<WithId<UserDBType> | null> {
-        const user: WithId<UserDBType> | null = await userCollection.findOne({$or: [{email: logOrEmail}, {login: logOrEmail}]});
+    //Возвращает id созданного пользователя
+    static async createUser(newUser: UserDBType): Promise<string> {
+        const result = await userCollection.insertOne(newUser);
+        return result.insertedId.toString()
+    }
+
+    static async getByLoginOrEmail(logOrEmail: string) {
+        const user: WithId<UserDBType> | UserDBType | null = await userCollection.findOne({$or: [{email: logOrEmail}, {login: logOrEmail}]});
         return user
     }
 

@@ -30,5 +30,4 @@ export const commentContentValidation = body('content')
 export const postPostValidation = () => [titleValidation, shortDescriptionValidation, contentValidation, blogIdValidationInBody, inputModelValidation];
 export const postInBlogValidation = () => [titleValidation, shortDescriptionValidation, contentValidation, mongoIDValidation, inputModelValidation];
 export const postPutValidation = () => [titleValidation, shortDescriptionValidation, contentValidation, mongoIDValidation, blogIdValidationInBody, inputModelValidation];
-
 export const addCommentToPost = () => [mongoIDValidation, commentContentValidation, inputModelValidation];

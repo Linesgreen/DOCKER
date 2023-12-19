@@ -4,7 +4,7 @@
 import {Router, Response, Request} from "express";
 import {RequestWithBody} from "../types/common";
 import {ChekPass} from "../types/auth/input";
-import {UserService} from "../domain/user-service";
+import {UserService} from "../domain/user.service";
 import {authLoginValidation} from "../middlewares/auth/auth-middleware";
 import {UserDBType, UserOutputType} from "../types/users/output";
 import {WithId} from "mongodb";
@@ -13,10 +13,13 @@ import {authBearerMiddleware} from "../middlewares/auth/auth-bearer-niddleware";
 import {UserQueryRepository} from "../repositories/query repository/user-query-repository";
 import {AboutMe} from "../types/auth/output";
 
+import {UserCreateModel} from "../types/users/input";
+
+
 export const authRoute = Router({});
 
 
-authRoute.post('/login', authLoginValidation(), async (req: RequestWithBody<ChekPass>, res: Response) => {
+authRoute.post('/login', authLoginValidation(), async (req: RequestWithBody<ChekPass>, res: Response<{accessToken: string}>) => {
     const {loginOrEmail, password}: ChekPass = req.body;
     const user: WithId<UserDBType> | null = await UserService.checkCredentials(loginOrEmail, password);
     if (user) {
@@ -37,7 +40,19 @@ authRoute.get('/me', authBearerMiddleware, async (req: Request, res: Response<Ab
         email: email,
         login: login,
         userId: id
-    })
+    });
+
+
+    authRoute.post('/', async (req: RequestWithBody<UserCreateModel>, res: Response<UserOutputType>) => {
+        const userData: UserCreateModel = {
+            login: req.body.login,
+            password: req.body.password,
+            email: req.body.email
+        };
+        const newUserId: string = await UserService.addUser(userData);
+        const newUser: UserOutputType | null = await UserQueryRepository.getUserById(newUserId);
+        res.status(201).send(newUser!);
+    });
 });
 
 

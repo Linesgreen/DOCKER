@@ -41,7 +41,7 @@ export class UserQueryRepository {
     }
 
     static async getUserById(id: string): Promise<UserOutputType | null> {
-        const user: WithId<UserDBType> | null = await userCollection.findOne({_id: new ObjectId(id)});
+        const user: UserDBType | null = await userCollection.findOne({_id: new ObjectId(id)});
         return user ? UserMapper(user) : null
     }
 

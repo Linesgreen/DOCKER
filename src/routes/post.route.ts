@@ -16,13 +16,14 @@ import {
     postPostValidation,
     postPutValidation
 } from "../middlewares/post/postsValidator";
-import {PostService} from "../domain/post-service";
+import {PostService} from "../domain/post.service";
 import {PostQueryRepository} from "../repositories/query repository/post-query-repository";
 import {UserParams} from "../types/users/input";
 import {CommentCreateModel, CommentsSortData} from "../types/comment/input";
 import {CommentQueryRepository} from "../repositories/query repository/comment-query-repository";
 import {mongoIdAndErrorResult} from "../middlewares/mongoIDValidation";
 import {authBearerMiddleware} from "../middlewares/auth/auth-bearer-niddleware";
+import {OutputItemsCommentType} from "../types/comment/output";
 export const postRoute = Router({});
 
 
@@ -68,7 +69,7 @@ postRoute.delete('/:id', authMiddleware, mongoIdAndErrorResult(), async (req: Re
 });
 
 // Cоздаем коментарий к посту
-postRoute.post('/:id/comments', authBearerMiddleware, addCommentToPost(), async (req: RequestWithBodyAndParams<PostParams, CommentCreateModel>, res: Response) => {
+postRoute.post('/:id/comments', authBearerMiddleware, addCommentToPost(), async (req: RequestWithBodyAndParams<PostParams, CommentCreateModel>, res: Response<OutputItemsCommentType | null>) => {
     const {id: userId, login: userLogin} = req.user!;
     const postId: string = req.params.id;
     const content: CommentCreateModel = req.body;
