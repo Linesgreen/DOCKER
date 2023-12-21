@@ -14,7 +14,10 @@ import {ConstructorFilter} from "../utils/blog-query/constructorFilter";
 // noinspection UnnecessaryLocalVariableJS
 export class CommentQueryRepository {
 
-    //Возвращает коментарии переработанные в мапере
+    /**
+     * Get All Comments
+     * @returns Comments - Mapped Blogs with pagination
+     */
     static async getAllComments() {
 
         const comments: WithId<CommentType>[] = await commentCollection
@@ -24,13 +27,23 @@ export class CommentQueryRepository {
         return comments
     }
 
-    // Получаем коментарий по коммент айд
-    static async getCommentById(id: string) : Promise<OutputItemsCommentType | null> {
+    /**
+     * Get Comment By ID
+     * @param id - Blog ID
+     * @returns Comment - Mapped Comment
+     * @return null - if dont exist
+     */
+    static async getCommentById(id: string): Promise<OutputItemsCommentType | null> {
         const comments: WithId<CommentType> | null = await commentCollection.findOne({_id: new ObjectId(id)});
         return comments ? CommentMapper(comments) : null
     }
 
-    // Получаем коментарии по пост айди
+    /**
+     * Get Comments from Post
+     * @param postId
+     * @param sortData - params for sort
+     * @returns Comments - Mapped Comments with pagination
+     */
     static async getCommentsByPostId(postId: string, sortData: CommentsSortData): Promise<OutputCommentType | null> {
         const formattedSortData: ConvertedCommentSortData = {
             sortBy: sortData.sortBy || 'createdAt',

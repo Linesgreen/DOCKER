@@ -9,7 +9,11 @@ import {ConvertedPostSortData} from "../../types/posts/query";
 
 
 export class PostQueryRepository {
-    //Возвращает посты переработанные в мапере
+    /**
+     * Get All Posts
+     * @param sortData - params for sort
+     * @returns Post - Mapped + pagination
+     */
     static async getAllPosts(sortData: PostSortData): Promise<OutputPostType> {
         const formattedSortData: ConvertedPostSortData = {
             sortBy: sortData.sortBy || 'createdAt',
@@ -38,7 +42,12 @@ export class PostQueryRepository {
         }
     }
 
-    //Возвращает пост переработанный в мапере
+    /**
+     * Get Comment By ID
+     * @param id - Comment ID
+     * @returns post - Mapped post
+     * @return null - if  dont exist
+     */
     static async getPostById(id: string): Promise<OutputItemsPostType | null> {
         const post: WithId<PostType> | null = await postCollection.findOne({_id: new ObjectId(id)});
         return post ? PostMapper(post) : null
@@ -49,7 +58,13 @@ export class PostQueryRepository {
         await postCollection.deleteMany({})
     }
 
-    //Возвращает посты переработанные в мапере, принадлежащие конкретному блогу
+    /**
+     * Get posts from blog
+     * @param id - post ID
+     * @param sortData - sort params
+     * @return posts - Mapped posts
+     * @return null - if dont exist
+     */
     static async getAllPostsInBlog(id: string, sortData: PostSortData): Promise<OutputPostType | null> {
 
         const formattedSortData: ConvertedPostSortData = {

@@ -30,7 +30,7 @@ export const authService = {
                 isConfirmed: false
             }
         };
-        await UserRepository.createUser(newUser);
+        await UserRepository.addUser(newUser);
         try {
             await EmailsManager.sendEmailConfirmation(userData.email, newUser.emailConfirmation.confirmationCode);
         } catch (e) {

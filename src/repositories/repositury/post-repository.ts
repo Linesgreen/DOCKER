@@ -6,14 +6,22 @@ import {ObjectId} from "mongodb";
 
 
 export class PostRepository {
-
-    // Возвращает ID созданного поста
+    /**
+     * Create new post
+     * @param newPost - Пост
+     * @returns ID созданного поста
+     */
     static async addPost(newPost: PostType): Promise<string> {
         const addResult = await postCollection.insertOne(newPost);
         return addResult.insertedId.toString()
     }
 
-    //Возвращает ✅true (пост найден), ❌false (пост не найден)
+    /**
+     * Update post
+     * @param updateParams - new post
+     * @param id - post id
+     * @returns Возвращает ✅true (пост найден), ❌false (пост не найден)
+     */
     static async updatePost(updateParams: PostUpdateModel, id: string): Promise<boolean> {
         const updateResult = await postCollection.updateOne({_id: new ObjectId(id)}, {
             $set: updateParams
@@ -21,7 +29,11 @@ export class PostRepository {
         return !!updateResult.matchedCount
     }
 
-    // Возарщает ✅true (пост найден и удален), ❌false (пост не найден)
+    /**
+     * Delete post
+     * @param id - post id
+     * @returns Возарщает ✅true (пост найден и удален), ❌false (пост не найден)
+     */
     static async deletePostById(id: string): Promise<boolean> {
         const deleteResult = await postCollection.deleteOne({_id: new ObjectId(id)});
         return !!deleteResult.deletedCount

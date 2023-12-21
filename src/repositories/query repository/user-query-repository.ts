@@ -10,6 +10,11 @@ import {FilterType, SortType} from "../../types/Mongo/params";
 
 // noinspection UnnecessaryLocalVariableJS
 export class UserQueryRepository {
+    /**
+     * Get All Users
+     * @param sortData - params for sort
+     * @returns Users - Mapped + pagination
+     */
     static async getAllUsers(sortData: UserSortData): Promise<UserWithPaginationOutputType> {
         const formattedSortData: ConvertedUserSortData = {
             searchEmailTerm: sortData.searchEmailTerm || null,
@@ -42,11 +47,24 @@ export class UserQueryRepository {
         }
 
     }
+
+    /**
+     * Get User by RegCode
+     * @param code - code for confirm account
+     * @returns Users - Mapped
+     * @returns null - if user doesn't exist
+     */
     static async getUserByRegCode(code: string): Promise<UserDBType | null> {
         const user: UserDBType | null = await userCollection.findOne({"emailConfirmation.confirmationCode": code});
         return user;
     }
 
+    /**
+     * Get User by ID
+     * @param id - user ID
+     * @returns Users - Mapped
+     * @returns null - if user doesn't exist
+     */
     static async getUserById(id: string): Promise<UserOutputType | null> {
         const user: UserDBType | null = await userCollection.findOne({_id: new ObjectId(id)});
         return user ? UserMapper(user) : null

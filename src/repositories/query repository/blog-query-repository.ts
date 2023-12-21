@@ -9,7 +9,11 @@ import {ConstructorFilter} from "../utils/blog-query/constructorFilter";
 import {FilterType, SortType} from "../../types/Mongo/params";
 
 export class BlogQueryRepository {
-    // Возвращает блоги переработанные в мапере, отфильтрованные и разбитые на страницы
+    /**
+     * Get All Blogs
+     * @param sortData - params for sort
+     * @returns Blogs - Mapped Blogs with pagination
+     */
     static async getAllBlogs(sortData: BlogSortData): Promise<OutputBlogType> {
 
         const formattedSortData: ConvertedBlogSortData = {
@@ -44,7 +48,12 @@ export class BlogQueryRepository {
 
     }
 
-    // Возвращает блог переработанный в мапере
+    /**
+     * Get Blog By ID
+     * @param id - Blog ID
+     * @returns Blog - Mapped Blog
+     * @return null - if blog dont exist
+     */
     static async getBlogById(id: string): Promise<OutputItemsBlogType | null> {
         const blog: WithId<BlogType> | null = await blogCollection.findOne({_id: new ObjectId(id)});
         return blog ? BLogMapper(blog) : null
