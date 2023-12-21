@@ -20,7 +20,7 @@ export type UserDBType = {
 export type UserOutputType = {
     "id": string
     "login": string
-    email: string
+    "email": string
     "createdAt": string
 }
 

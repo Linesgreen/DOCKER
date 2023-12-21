@@ -26,7 +26,9 @@ export const RouterPaths = {
 
 morganBody(app);
 
+
 app.use(bodyParser.json());
+
 app.use(RouterPaths.posts, postRoute);
 app.use(RouterPaths.blogs, blogRoute);
 app.use(RouterPaths.__test__, deleteTestRoute);

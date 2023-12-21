@@ -1,6 +1,6 @@
 import {UserDBType} from "../../types/users/output";
 import {userCollection} from "../../db/db";
-import {ObjectId, WithId} from "mongodb";
+import {ObjectId} from "mongodb";
 
 // noinspection UnnecessaryLocalVariableJS
 export class UserRepository {
@@ -17,8 +17,24 @@ export class UserRepository {
     }
 
     static async getByLoginOrEmail(logOrEmail: string) {
-        const user: WithId<UserDBType> | UserDBType | null = await userCollection.findOne({$or: [{email: logOrEmail}, {login: logOrEmail}]});
+        const user: UserDBType | null = await userCollection.findOne({$or: [{"accountData.email": logOrEmail}, {"accountData.userName": logOrEmail}]});
         return user
+    }
+
+    static async activatedUser(code: string) {
+        const result = await userCollection.updateOne({"emailConfirmation.confirmationCode": code},{$set: {"emailConfirmation.isConfirmed": true}});
+        return !!result.modifiedCount
+    }
+
+    static async updateRegCode(email: string, newConfCode: string, expirationDate: Date): Promise<boolean> {
+        const result = await userCollection
+            .updateOne({"accountData.email": email}, {
+                $set: {
+                    "emailConfirmation.confirmationCode": newConfCode,
+                    "emailConfirmation.expirationDate": expirationDate
+                }
+            });
+        return !!result.modifiedCount
     }
 
     static async deleteUserById(id: string): Promise<boolean> {
